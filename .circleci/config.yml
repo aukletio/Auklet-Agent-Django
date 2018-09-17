@@ -1,0 +1,87 @@
+version: 2
+
+jobs:
+    build:
+        environment:
+            TZ: "/usr/share/zoneinfo/America/Detroit"
+        working_directory: ~/app
+        docker:
+            - image: circleci/node:9-stretch
+        steps:
+
+            ##
+            # SETUP
+            ##
+            - run:
+                name: Flag local build
+                command: |
+                  if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
+                    touch ~/.localCircleBuild
+                  fi
+            - add_ssh_keys
+            - checkout
+            - run:
+                name: Validate PR
+                command: |
+                  if [[ ! -f ~/.localCircleBuild ]]; then
+                    bash .devops/validate-pr.sh
+                  fi
+            - run:
+                name: Install jq
+                command: |
+                  sudo curl -sSL -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+                  sudo chmod +x /usr/local/bin/jq
+            - run:
+                name: Calculate codebase version
+                command: |
+                  git config --global user.email "$BOT_GIT_EMAIL" && git config --global user.name "$BOT_GIT_NAME"
+                  bash .devops/calculate-app-version.sh
+                  cp ~/.version VERSION
+
+            ##
+            # RESTORE CACHES
+            ##
+
+            ##
+            # TESTS
+            ##
+
+            ##
+            # SAVE CACHES
+            ##
+
+            ##
+            # DEPLOYMENT
+            ##
+            - run:
+                name: Deploy Beta (master)
+                command: |
+                  set -ou pipefail
+                  if [[ ! -f ~/.localCircleBuild ]]; then
+                    if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                      bash .devops/deploy.sh beta
+                    fi
+                  fi
+            - run:
+                name: Deploy RC (rc)
+                command: |
+                  set -ou pipefail
+                  if [[ ! -f ~/.localCircleBuild ]]; then
+                    if [ "${CIRCLE_BRANCH}" == "rc" ]; then
+                      bash .devops/deploy.sh rc
+                      bash .devops/post-release.sh
+                      # Need to checkout rc again so we can run more scripts.
+                      git checkout rc
+                      bash .devops/updateProdReleasePr.sh
+                    fi
+                  fi
+            - run:
+                name: Deploy Production (release)
+                command: |
+                  set -ou pipefail
+                  if [[ ! -f ~/.localCircleBuild ]]; then
+                    if [ "${CIRCLE_BRANCH}" == "release" ]; then
+                      bash .devops/deploy.sh release
+                      bash .devops/post-release.sh
+                    fi
+                  fi
