@@ -10,8 +10,7 @@ import signal
 from six import iteritems
 from six.moves import _thread
 
-from auklet.broker import MQTTClient
-from auklet.utils import get_mac, setup_thread_excepthook, b
+from auklet.utils import get_mac
 from auklet.monitoring.logging import AukletLogging
 from auklet.monitoring.processing import Client
 from auklet.stats import MonitoringTree
@@ -45,12 +44,6 @@ class Monitoring(AukletLogging):
 
     def __init__(self, apikey=None, app_id=None,
                  base_url="https://api.auklet.io/", monitoring=True):
-        global except_hook_set
-        sys.excepthook = self.handle_exc
-        if not except_hook_set:
-            # ensure not attempting to set threading excepthook more than once
-            setup_thread_excepthook()
-            except_hook_set = True
         self.app_id = app_id
         self.mac_hash = get_mac()
         self.client = Client(apikey, app_id, base_url, self.mac_hash)

@@ -5,26 +5,16 @@ import hashlib
 import requests
 
 from auklet.__about__ import __version__ as auklet_version
-from auklet.errors import AukletConfigurationError
 
 __all__ = ['open_auklet_url', 'create_file', 'clear_file', 'build_url',
            'get_commit_hash', 'get_mac', 'get_device_ip', 'get_agent_version',
-           'post_auklet_url', 'setup_thread_excepthook', 'get_abs_path',
-           'b', 'u']
+           'post_auklet_url', 'get_abs_path', 'b', 'u']
 
 
 def open_auklet_url(url, apikey):
     try:
         res = requests.get(url, headers={"Authorization": "JWT %s" % apikey})
-    except requests.HTTPError as e:
-        if e.status_code == 401:
-            raise AukletConfigurationError(
-                "Invalid configuration of Auklet Monitoring, "
-                "ensure proper API key and app ID passed to "
-                "Monitoring class"
-            )
-        raise e
-    except Exception as e:
+    except Exception:
         return None
     return res
 
@@ -67,6 +57,7 @@ def get_commit_hash():
         # TODO Error out app if no commit hash
         return ""
 
+
 def get_abs_path(path):
     try:
         return os.path.abspath(path).split('/.auklet')[0]
@@ -77,7 +68,7 @@ def get_abs_path(path):
 def get_device_ip():
     try:
         res = requests.get("https://api.ipify.org")
-        return u(res.read())
+        return u(res.content)
     except (requests.RequestException, Exception):
         # TODO log to kafka if the ip service fails for any reason
         return None
@@ -85,34 +76,6 @@ def get_device_ip():
 
 def get_agent_version():
     return auklet_version
-
-
-def setup_thread_excepthook():
-    import threading
-    """
-    Workaround for `sys.excepthook` thread bug from:
-    http://bugs.python.org/issue1230540
-
-    Call once from the main thread before creating any threads.
-    """
-    init_original = threading.Thread.__init__
-
-    def init(self, *args, **kwargs):
-
-        init_original(self, *args, **kwargs)
-        run_original = self.run
-
-        def run_with_except_hook(*args2, **kwargs2):
-            try:
-                run_original(*args2, **kwargs2)
-            except (KeyboardInterrupt, SystemExit):
-                raise
-            except:
-                sys.excepthook(*sys.exc_info())
-
-        self.run = run_with_except_hook
-
-    threading.Thread.__init__ = init
 
 
 if sys.version_info < (3,):
