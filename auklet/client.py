@@ -6,11 +6,11 @@ from uuid import uuid4
 
 from django.conf import settings
 
-from .errors import AukletConfigurationError
-from .broker import MQTTClient
-from .stats import Event, SystemMetrics, FilenameCaches
-from .utils import create_file, get_agent_version, get_device_ip, get_mac, \
-                   get_abs_path, open_auklet_url, build_url, u
+from auklet.errors import AukletConfigurationError
+from auklet.broker import MQTTClient
+from auklet.stats import Event, SystemMetrics, FilenameCaches
+from auklet.utils import create_file, get_agent_version, get_device_ip, \
+                         get_mac, get_abs_path, open_auklet_url, build_url, u
 
 try:
     # For Python 3.0 and later

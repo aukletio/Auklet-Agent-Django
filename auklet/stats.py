@@ -9,7 +9,7 @@ except ImportError:  # pragma: no cover
     # installation of psutil which we cannot configure currently
     psutil = None
 
-__all__ = ['Event', 'SystemMetrics']
+__all__ = ['Event', 'SystemMetrics', 'FilenameCaches']
 
 
 class Event(object):
