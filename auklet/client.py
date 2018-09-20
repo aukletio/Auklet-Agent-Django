@@ -41,8 +41,9 @@ class DjangoClient(object):
         auklet_config = settings.AUKLET_CONFIG
         self.apikey = auklet_config.get("api_key", None)
         self.app_id = auklet_config.get("app_id", None)
+        self.release = auklet_config.get("release", None)
         self.version = auklet_config.get("version", None)
-        self.base_url = auklet_config.get("base_url", None)
+        self.base_url = auklet_config.get("base_url", "https://api.auklet.io/")
 
         if self.apikey is None:
             raise AukletConfigurationError(
@@ -50,7 +51,7 @@ class DjangoClient(object):
         if self.app_id is None:
             raise AukletConfigurationError(
                 "Please set app_id in AUKLET_CONFIG settings")
-        if self.version is None:
+        if self.release is None:
             raise AukletConfigurationError(
                 "Please set release in AUKLET_CONFIG settings")
         create_file(self.identification_filename)
@@ -71,7 +72,8 @@ class DjangoClient(object):
         if not res:
             res = open_auklet_url(
                 build_url(self.base_url,
-                          "private/devices/{}/app_config/".format(self.app_id)),
+                          "private/devices/{}/app_config/".format(
+                              self.app_id)),
                 self.apikey
             )
             res = json.loads(u(res.content))['config']['org_id']
@@ -92,6 +94,7 @@ class DjangoClient(object):
         event_dict['timestamp'] = int(round(time() * 1000))
         event_dict['systemMetrics'] = dict(SystemMetrics())
         event_dict['macAddressHash'] = self.mac_hash
+        event_dict['release'] = self.release
         event_dict['version'] = self.version
         event_dict['agentVersion'] = get_agent_version()
         event_dict['device'] = None
