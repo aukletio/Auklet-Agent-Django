@@ -31,6 +31,12 @@ def post_auklet_url(url, apikey, data):
     return res.json()
 
 
+def create_dir(dir_name=".auklet"):
+    if not os.path.exists(dir_name):
+        os.mkdir(dir_name)
+    return True
+
+
 def create_file(filename):
     open(filename, "a").close()
 

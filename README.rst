@@ -11,7 +11,7 @@
 
     </p>
 
-Auklet for Python
+Auklet for Django
 =================
 .. image:: https://img.shields.io/pypi/v/auklet.svg
     :target: https://pypi.python.org/pypi/auklet
@@ -34,7 +34,7 @@ Auklet for Python
    :alt: Test Coverage
 
 
-This is the official Python agent for `Auklet`_, official supports 2.7.9+ and 3.4-3.7, and
+This is the official Django agent for `Auklet`_, official supports 2.7.9+ and 3.4-3.7, and
 runs on most posix based operating systems (Debian, Ubuntu Core, Raspbian, QNX, etc).
 
 Features
@@ -82,6 +82,7 @@ config settings:
     AUKLET_CONFIG = {
         "api_key": "<API_KEY>",
         "app_id": "<APP_ID>",
+        "org_id": "<ORG_ID>",
         "release": "<CURRENT_COMMIT_HASH"
     }
 

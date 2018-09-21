@@ -10,7 +10,7 @@ from auklet.errors import AukletConfigurationError
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import create_file, get_agent_version, get_device_ip, \
-                         get_mac, get_abs_path, open_auklet_url, build_url, u
+                         get_mac, get_abs_path, create_dir
 
 try:
     # For Python 3.0 and later
@@ -35,7 +35,7 @@ def get_client():
 
 
 class DjangoClient(object):
-    identification_filename = ".auklet/identification"
+    com_config_filename = ".auklet/communication"
 
     def __init__(self):
         auklet_config = settings.AUKLET_CONFIG
@@ -43,6 +43,7 @@ class DjangoClient(object):
         self.app_id = auklet_config.get("app_id", None)
         self.release = auklet_config.get("release", None)
         self.version = auklet_config.get("version", None)
+        self.org_id = auklet_config.get("org_id", None)
         self.base_url = auklet_config.get("base_url", "https://api.auklet.io/")
 
         if self.apikey is None:
@@ -54,36 +55,17 @@ class DjangoClient(object):
         if self.release is None:
             raise AukletConfigurationError(
                 "Please set release in AUKLET_CONFIG settings")
-        create_file(self.identification_filename)
-        self.org_id = self.get_org_id()
-        self.abs_path = get_abs_path(self.identification_filename)
+        if self.org_id is None:
+            raise AukletConfigurationError(
+                "Please set org_id in AUKLET_CONFIG settings")
+        create_dir()
+        create_file(self.com_config_filename)
+        self.abs_path = get_abs_path(self.com_config_filename)
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
         self.broker = MQTTClient(self)
         self.file_cache = FilenameCaches()
-
-    def get_org_id(self):
-        try:
-            with open(self.identification_filename, "r") as id_file:
-                res = id_file.read()
-        except IOError:
-            res = False
-        if not res:
-            res = open_auklet_url(
-                build_url(self.base_url,
-                          "private/devices/{}/app_config/".format(
-                              self.app_id)),
-                self.apikey
-            )
-            res = json.loads(u(res.content))['config']['org_id']
-        if res is not None:
-            self.write_org_id(res)
-            return res
-
-    def write_org_id(self, org_id):
-        with open(self.identification_filename, "w") as id_file:
-            id_file.write(org_id)
 
     def build_event_data(self, type, traceback):
         event = Event(type, traceback, self.file_cache, self.abs_path)
