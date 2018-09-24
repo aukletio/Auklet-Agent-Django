@@ -55,15 +55,6 @@ def get_mac():
     return hashlib.md5(b(mac)).hexdigest()
 
 
-def get_commit_hash():
-    try:
-        with open(".auklet/version", "r") as auklet_file:
-            return auklet_file.read().rstrip()
-    except IOError:
-        # TODO Error out app if no commit hash
-        return ""
-
-
 def get_abs_path(path):
     try:
         return os.path.abspath(path).split('/.auklet')[0]

@@ -40,10 +40,10 @@ class DjangoClient(object):
     def __init__(self):
         auklet_config = settings.AUKLET_CONFIG
         self.apikey = auklet_config.get("api_key", None)
-        self.app_id = auklet_config.get("app_id", None)
+        self.app_id = auklet_config.get("application", None)
         self.release = auklet_config.get("release", None)
         self.version = auklet_config.get("version", None)
-        self.org_id = auklet_config.get("org_id", None)
+        self.org_id = auklet_config.get("organization", None)
         self.base_url = auklet_config.get("base_url", "https://api.auklet.io/")
 
         if self.apikey is None:
@@ -51,13 +51,10 @@ class DjangoClient(object):
                 "Please set api_key in AUKLET_CONFIG settings")
         if self.app_id is None:
             raise AukletConfigurationError(
-                "Please set app_id in AUKLET_CONFIG settings")
-        if self.release is None:
-            raise AukletConfigurationError(
-                "Please set release in AUKLET_CONFIG settings")
+                "Please set application in AUKLET_CONFIG settings")
         if self.org_id is None:
             raise AukletConfigurationError(
-                "Please set org_id in AUKLET_CONFIG settings")
+                "Please set organization in AUKLET_CONFIG settings")
         create_dir()
         create_file(self.com_config_filename)
         self.abs_path = get_abs_path(self.com_config_filename)
