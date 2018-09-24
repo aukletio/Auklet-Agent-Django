@@ -71,17 +71,13 @@ to the end of your middleware configs:
         "auklet.middleware.AukletMiddleware",
     )
 
-Alternatively to set up the wsgi middleware modify your `wsgi.py`:
-
+NOTE: If you are already using an error handling middleware which returns a response you need to disable it or add:
 .. sourcecode:: python
 
-    import os
-    from django.core.wsgi import get_wsgi_application
-    from django.conf import settings
-    from auklet.middleware import WSGIAukletMiddleware
+    got_request_exception.send(sender=self, request=request)
 
-    application = get_wsgi_application()
-    application = WSGIAukletMiddleware(application)
+to the line before you return a response, this ensures that the signal is
+sent to the Auklet middleware
 
 Then go and create an application at https://app.auklet.io/ to get your
 config settings:
@@ -93,6 +89,10 @@ config settings:
         "application": "<APPLICATION>",
         "organization": "<ORGANIZATION>"
     }
+
+See the [Advanced Setup](https://github.com/aukletio/Auklet-Agent-Django/blob/master/advanced_setup.rst) section if you would like to configure Auklet using a
+WSGI middleware rather than the built in Django middleware. Please note that you should only use one
+or the other.
 
 NOTE: The django application must have write permission to the directory
 it is executing in.
