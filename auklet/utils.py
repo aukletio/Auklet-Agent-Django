@@ -7,8 +7,8 @@ import requests
 from auklet.__about__ import __version__ as auklet_version
 
 __all__ = ['open_auklet_url', 'create_file', 'clear_file', 'build_url',
-           'get_commit_hash', 'get_mac', 'get_device_ip', 'get_agent_version',
-           'post_auklet_url', 'get_abs_path', 'b', 'u']
+           'get_mac', 'get_device_ip', 'get_agent_version',
+           'post_auklet_url', 'create_dir', 'b', 'u']
 
 
 def open_auklet_url(url, apikey):
@@ -53,13 +53,6 @@ def get_mac():
     mac_num = hex(uuid.getnode()).replace('0x', '').upper()
     mac = '-'.join(mac_num[i: i + 2] for i in range(0, 11, 2))
     return hashlib.md5(b(mac)).hexdigest()
-
-
-def get_abs_path(path):
-    try:
-        return os.path.abspath(path).split('/.auklet')[0]
-    except IndexError:
-        return ''
 
 
 def get_device_ip():

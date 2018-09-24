@@ -1,4 +1,3 @@
-import json
 import msgpack
 
 from time import time
@@ -10,7 +9,7 @@ from auklet.errors import AukletConfigurationError
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import create_file, get_agent_version, get_device_ip, \
-                         get_mac, get_abs_path, create_dir
+                         get_mac, create_dir
 
 try:
     # For Python 3.0 and later
@@ -35,8 +34,6 @@ def get_client():
 
 
 class DjangoClient(object):
-    com_config_filename = ".auklet/communication"
-
     def __init__(self):
         auklet_config = settings.AUKLET_CONFIG
         self.apikey = auklet_config.get("api_key", None)
@@ -44,6 +41,8 @@ class DjangoClient(object):
         self.release = auklet_config.get("release", None)
         self.version = auklet_config.get("version", None)
         self.org_id = auklet_config.get("organization", None)
+        self.broker_url = auklet_config.get("broker", "mq.feeds.auklet.io")
+        self.port = auklet_config.get("port", 8883)
         self.base_url = auklet_config.get("base_url", "https://api.auklet.io/")
 
         if self.apikey is None:
@@ -57,7 +56,6 @@ class DjangoClient(object):
                 "Please set organization in AUKLET_CONFIG settings")
         create_dir()
         create_file(self.com_config_filename)
-        self.abs_path = get_abs_path(self.com_config_filename)
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
@@ -77,7 +75,6 @@ class DjangoClient(object):
         event_dict['version'] = self.version
         event_dict['agentVersion'] = get_agent_version()
         event_dict['device'] = None
-        event_dict['absPath'] = self.abs_path
         return event_dict
 
     def build_msgpack_event_data(self, type, traceback):

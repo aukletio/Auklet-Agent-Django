@@ -34,7 +34,7 @@ Auklet for Django
    :alt: Test Coverage
 
 
-This is the official Django agent for `Auklet`_, official supports 2.7.9+ and 3.4-3.7, and
+This is the official Django agent for `Auklet`_, official supports Django 1.7+ and
 runs on most posix based operating systems (Debian, Ubuntu Core, Raspbian, QNX, etc).
 
 Features
@@ -93,6 +93,9 @@ config settings:
         "application": "<APPLICATION>",
         "organization": "<ORGANIZATION>"
     }
+
+NOTE: The django application must have write permission to the directory
+it is executing in.
 
 
 Authorization

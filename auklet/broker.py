@@ -20,12 +20,12 @@ __all__ = ["MQTTClient"]
 
 class MQTTClient(object):
     producer = None
-    brokers = None
+    brokers = "mq.feeds.auklet.io"
     client = None
     username = None
     password = None
     com_config_filename = ".auklet/communication"
-    port = None
+    port = 8883
     producer_types = {
         "monitoring": "python/profiler/{}/{}",
         "event": "python/events/{}/{}",
@@ -33,7 +33,8 @@ class MQTTClient(object):
 
     def __init__(self, client):
         self.client = client
-        self._get_conf()
+        self.brokers = self.client.broker_url
+        self.port = int(self.client.port)
         self.create_producer()
         topic_suffix = "{}/{}".format(
             self.client.org_id, self.client.app_id)
@@ -41,21 +42,6 @@ class MQTTClient(object):
             "monitoring": "python/profiler/{}".format(topic_suffix),
             "event": "python/events/{}".format(topic_suffix),
         }
-
-    def _write_conf(self, info):
-        with open(self.com_config_filename, "w") as conf:
-            conf.write(json.dumps(info))
-
-    def _get_conf(self):
-        res = open_auklet_url(
-            build_url(
-                self.client.base_url, "private/devices/config/"
-            ),
-            self.client.apikey
-        )
-        loaded = json.loads(u(res.content))
-        self._write_conf(loaded)
-        self._read_from_conf(loaded)
 
     def _get_certs(self):
         url = Request(
@@ -75,10 +61,6 @@ class MQTTClient(object):
         f = open(filename, "wb")
         f.write(res.read())
         return True
-
-    def _read_from_conf(self, data):
-        self.brokers = data['brokers']
-        self.port = int(data['port'])
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
