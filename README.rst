@@ -5,7 +5,7 @@
     :target: https://auklet.io
     :align: center
     :width: 1000
-    :alt: Auklet - Problem Solving Software for Python
+    :alt: Auklet - Problem Solving Software for Django
 
 .. raw:: html
 
