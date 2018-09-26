@@ -107,9 +107,9 @@ well as during initial setup.
 
 Release Tracking
 ^^^^^^^^^^^^^^^^
-To track releases and identify which devices are running what version of code
-you may provide the commit hash of your deployed code and a version string
-you can modify.
+Optionally, you can track releases and identify which servers are running
+what variant of code. To do this you may provide the commit hash of your
+deployed code and a version string you can modify.
 This release value needs to be passed into the settings variable through the
 `release` key and your custom version must be passed via the `version` key.
 The `release` value needs to be the commit hash that represents the
@@ -135,7 +135,5 @@ Resources
 
 .. _Auklet: https://auklet.io
 .. _hello@auklet.io: mailto:hello@auklet.io
-.. _ESG-USA: https://github.com/ESG-USA
-.. _ESG Organization: https://github.com/ESG-USA
 .. _Python Documentation: https://docs.auklet.io/docs/python-integration
 .. _Issue Tracker: https://github.com/aukletio/Auklet-Agent-Django/issues

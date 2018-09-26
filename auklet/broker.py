@@ -46,7 +46,7 @@ class MQTTClient(object):
     def _get_certs(self):
         url = Request(
             build_url(self.client.base_url, "private/devices/certificates/"),
-            headers={"Authorization": "JWT %s" % self.client.apikey})
+            headers={"Authorization": "JWT {}".format(self.client.apikey)})
         try:
             try:
                 res = urlopen(url)

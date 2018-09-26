@@ -13,7 +13,7 @@ __all__ = ['open_auklet_url', 'create_file', 'clear_file', 'build_url',
 
 def open_auklet_url(url, apikey):
     try:
-        res = requests.get(url, headers={"Authorization": "JWT %s" % apikey})
+        res = requests.get(url, headers={"Authorization": "JWT {}".format(apikey)})
     except Exception:
         return None
     return res
@@ -24,7 +24,7 @@ def post_auklet_url(url, apikey, data):
         res = requests.post(
             url,
             json=data,
-            headers={"Authorization": "JWT %s" % apikey,
+            headers={"Authorization": "JWT {}".format(apikey),
                      "Content-Type": "application/json"})
     except requests.HTTPError:
         return None
