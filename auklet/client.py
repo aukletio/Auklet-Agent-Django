@@ -55,15 +55,15 @@ class DjangoClient(object):
             raise AukletConfigurationError(
                 "Please set organization in AUKLET_CONFIG settings")
         create_dir()
-        create_file(self.com_config_filename)
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
-        self.broker = MQTTClient(self)
+        self.broker = MQTTClient(self.broker_url, self.port, self.app_id,
+                                 self.org_id, self.apikey, self.base_url)
         self.file_cache = FilenameCaches()
 
     def build_event_data(self, type, traceback):
-        event = Event(type, traceback, self.file_cache, self.abs_path)
+        event = Event(type, traceback, self.file_cache)
         event_dict = dict(event)
         event_dict['application'] = self.app_id
         event_dict['publicIP'] = get_device_ip()

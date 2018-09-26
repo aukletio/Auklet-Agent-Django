@@ -13,12 +13,11 @@ __all__ = ['Event', 'SystemMetrics', 'FilenameCaches']
 
 
 class Event(object):
-    __slots__ = ['trace', 'exc_type', 'line_num', 'abs_path']
+    __slots__ = ['trace', 'exc_type', 'line_num']
 
-    def __init__(self, exc_type, tb, tree, abs_path):
+    def __init__(self, exc_type, tb, tree):
         self.exc_type = exc_type.__name__
         self.line_num = tb.tb_lineno
-        self.abs_path = abs_path
         self._build_traceback(tb, tree)
 
     def __iter__(self):

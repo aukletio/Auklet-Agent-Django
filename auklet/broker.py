@@ -5,7 +5,7 @@ import json
 import logging
 import paho.mqtt.client as mqtt
 
-from auklet.utils import build_url, create_file, open_auklet_url, u
+from auklet.utils import build_url, create_file
 
 try:
     # For Python 3.0 and later
@@ -31,13 +31,16 @@ class MQTTClient(object):
         "event": "python/events/{}/{}",
     }
 
-    def __init__(self, client):
-        self.client = client
-        self.brokers = self.client.broker_url
-        self.port = int(self.client.port)
+    def __init__(self, broker_url, port, app_id, org_id, apikey, base_url):
+        self.brokers = broker_url
+        self.port = int(port)
+        self.org_id = org_id
+        self.app_id = app_id
+        self.apikey = apikey
+        self.base_url = base_url
         self.create_producer()
         topic_suffix = "{}/{}".format(
-            self.client.org_id, self.client.app_id)
+            self.org_id, self.app_id)
         self.producer_types = {
             "monitoring": "python/profiler/{}".format(topic_suffix),
             "event": "python/events/{}".format(topic_suffix),
@@ -45,8 +48,8 @@ class MQTTClient(object):
 
     def _get_certs(self):
         url = Request(
-            build_url(self.client.base_url, "private/devices/certificates/"),
-            headers={"Authorization": "JWT {}".format(self.client.apikey)})
+            build_url(self.base_url, "private/devices/certificates/"),
+            headers={"Authorization": "JWT {}".format(self.apikey)})
         try:
             try:
                 res = urlopen(url)
@@ -68,12 +71,12 @@ class MQTTClient(object):
 
     def create_producer(self):
         if self._get_certs():
-            self.producer = mqtt.Client(client_id=self.client.app_id,
+            self.producer = mqtt.Client(client_id=self.app_id,
                                         protocol=mqtt.MQTTv311,
                                         transport="ssl")
             self.producer.username_pw_set(
-                username=self.client.app_id,
-                password=self.client.apikey)
+                username=self.app_id,
+                password=self.apikey)
             self.producer.enable_logger()
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
