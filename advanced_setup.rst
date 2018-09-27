@@ -1,4 +1,4 @@
-If you wish set up Auklet using a wsgi middleware instead of the
+If you wish to set up Auklet using a wsgi middleware instead of the
 default django middleware:
 
 .. sourcecode:: python
