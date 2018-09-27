@@ -72,6 +72,7 @@ to the end of your middleware configs:
     )
 
 NOTE: If you are already using an error handling middleware which returns a response you need to disable it or add:
+
 .. sourcecode:: python
 
     got_request_exception.send(sender=self, request=request)
