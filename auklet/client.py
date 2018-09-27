@@ -8,8 +8,8 @@ from django.conf import settings
 from auklet.errors import AukletConfigurationError
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
-from auklet.utils import create_file, get_agent_version, get_device_ip, \
-                         get_mac, create_dir
+from auklet.utils import get_agent_version, get_device_ip, get_mac, \
+                         create_dir
 
 try:
     # For Python 3.0 and later

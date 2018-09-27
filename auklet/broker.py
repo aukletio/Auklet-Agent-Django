@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import ssl
-import json
 import logging
 import paho.mqtt.client as mqtt
 
@@ -24,7 +23,6 @@ class MQTTClient(object):
     client = None
     username = None
     password = None
-    com_config_filename = ".auklet/communication"
     port = 8883
     producer_types = {
         "monitoring": "python/profiler/{}/{}",
