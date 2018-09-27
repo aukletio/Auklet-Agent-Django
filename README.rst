@@ -56,10 +56,10 @@ To setup Auklet monitoring for you application simply include it in your
 .. sourcecode:: python
 
     INSTALLED_APPS = (
-    ...,
-    'auklet',
-    ...,
-)
+        ...,
+        'auklet',
+        ...,
+    )
 
 To set up default django middleware error handling add the auklet middleware
 to the end of your middleware configs:
