@@ -13,17 +13,20 @@ jobs:
             # SETUP
             ##
             - run:
-                name: Flag local build
+                name: Flag local/PR builds
                 command: |
                   if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
                     touch ~/.localCircleBuild
+                  fi
+                  if [[ "$CIRCLE_PR_USERNAME" != '' ]]; then
+                    touch ~/.prCircleBuild
                   fi
             - add_ssh_keys
             - checkout
             - run:
                 name: Validate PR
                 command: |
-                  if [[ ! -f ~/.localCircleBuild ]]; then
+                  if [[ ! -f ~/.localCircleBuild && ! -f ~/.prCircleBuild ]]; then
                     bash .devops/validate-pr.sh
                   fi
             - run:
@@ -34,8 +37,12 @@ jobs:
             - run:
                 name: Calculate codebase version
                 command: |
-                  git config --global user.email "$BOT_GIT_EMAIL" && git config --global user.name "$BOT_GIT_NAME"
-                  bash .devops/calculate-app-version.sh
+                  if [[ ! -f ~/.prCircleBuild ]]; then
+                    git config --global user.email "$BOT_GIT_EMAIL" && git config --global user.name "$BOT_GIT_NAME"
+                    bash .devops/calculate-app-version.sh
+                  else
+                    echo '0.1.0-a.local.circleci.build' > ~/.version
+                  fi
                   cp ~/.version VERSION
 
             ##
