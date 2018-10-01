@@ -15,6 +15,7 @@ if [[ "$ENVDIR" == "release" ]]; then
   # Make and upload the distribution.
   # Update setuptools so we have a version that supports Markdown READMEs.
   # twine is also required.
+  mkdir -p auklet/licenses
   cp LICENSE auklet/licenses/auklet
   sudo pip install -U setuptools twine wheel
   python setup.py sdist bdist_wheel
