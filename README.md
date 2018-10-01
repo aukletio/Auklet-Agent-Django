@@ -1,1 +1,0 @@
-# Auklet-Agent-Django
