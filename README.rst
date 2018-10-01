@@ -56,7 +56,6 @@ To setup Auklet monitoring for you application simply include it in your
 .. sourcecode:: python
 
     INSTALLED_APPS = (
-        ...,
         'auklet',
         ...,
     )
