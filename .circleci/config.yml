@@ -32,7 +32,10 @@ jobs:
                 name: Calculate codebase version
                 command: |
                   bash .devops/calculate-app-version.sh
-                  cp ~/.version VERSION
+                  bash .devops/semverTo440.sh
+                  sed -i -e "s/__version__ = .*/__version__ = '$(cat ~/.version440)'/" auklet/__about__.py
+                  VERSION_SIMPLE=$(cat ~/.version | xargs | cut -f1 -d"+")
+                  sed -i -e "s/__semver__ = .*/__semver__ = '$VERSION_SIMPLE'/" auklet/__about__.py
 
             ##
             # RESTORE CACHES
