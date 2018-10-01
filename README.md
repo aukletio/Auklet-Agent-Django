@@ -8,6 +8,7 @@
 
 **Fixed bugs:**
 
+- Fix CircleCI image [#11](https://github.com/aukletio/Auklet-Agent-Django/pull/11) ([rjenkinsjr](https://github.com/rjenkinsjr))
 - Add requirements.txt [#7](https://github.com/aukletio/Auklet-Agent-Django/pull/7) ([tylerwiersing](https://github.com/tylerwiersing))
 - README Update [#5](https://github.com/aukletio/Auklet-Agent-Django/pull/5) ([tylerwiersing](https://github.com/tylerwiersing))
 - Remove Duplicate README [#4](https://github.com/aukletio/Auklet-Agent-Django/pull/4) ([tylerwiersing](https://github.com/tylerwiersing))

@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.1.0-rc.3](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.0-rc.3)
+
+**Fixed bugs:**
+
+- Fix CircleCI image [#11](https://github.com/aukletio/Auklet-Agent-Django/pull/11) ([rjenkinsjr](https://github.com/rjenkinsjr))
+
 ### [0.1.0-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.0-rc.2)
 
 **Fixed bugs:**
