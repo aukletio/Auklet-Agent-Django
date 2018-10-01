@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Configure git for commits/pushes.
+git config --global user.email "$BOT_GIT_EMAIL"
+git config --global user.name "$BOT_GIT_NAME"
 # Get the version and drop all build metadata from it.
 VERSION=$(cat ~/.version | xargs | cut -f1 -d"+")
 # Revert to a pristine checkout.

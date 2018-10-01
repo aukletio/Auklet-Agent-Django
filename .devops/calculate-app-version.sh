@@ -7,17 +7,20 @@ function abortIfModeNone {
     exit 1
   fi
 }
-# When running CircleCI locally, don't do anything and use a dummy app version.
-# This skips unnecessary behaviors in a local build that won't work.
+# When running CircleCI locally or for PRs, don't do anything and use a dummy
+# app version. This skips unnecessary behaviors in a local build that won't work.
 NEW_VERSION=
 if [[ -f ~/.localCircleBuild ]]; then
   echo 'This is a local CircleCI build.'
   NEW_VERSION="0.1.0-a.local.circleci.build"
+elif [[ -f ~/.prCircleBuild ]]; then
+  echo 'This is a PR CircleCI build.'
+  NEW_VERSION="0.1.0-a.pr.circleci.build"
 else
   # Initialize.
   echo 'Initializing...'
   cd ~ # Prevents codebase contamination.
-  npm install --no-spin semver semver-extra > /dev/null 2>&1
+  npm install --no-spin request request-promise semver semver-extra > /dev/null 2>&1
   # Get PR number from the validation step.
   if [[ -f prnum.txt ]]; then
     PR_NUM=$(cat prnum.txt)
