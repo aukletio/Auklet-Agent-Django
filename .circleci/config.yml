@@ -6,7 +6,16 @@ jobs:
             TZ: "/usr/share/zoneinfo/America/Detroit"
         working_directory: ~/app
         docker:
-            - image: circleci/node:9-stretch
+            # We are using this image because:
+            # - It has Python preinstalled, which we need to do anything useful.
+            # - It's Debian Jessie, which avoids "libssl-dev" being too new for
+            # the versions of Python we want to test/support. (Debian Stretch
+            # exhibits this problem and makes it impossible to test all 3.x
+            # variants in a single tox execution. See
+            # https://github.com/pyenv/pyenv/wiki/Common-build-problems#error-the-python-ssl-extension-was-not-compiled-missing-the-openssl-lib
+            # for details regarding "libssl-dev" vs "libssl1.0-dev".)
+            # - It has Node, for our DevOps integrations.
+            - image: circleci/python:3.6.6-jessie-node-browsers
         steps:
 
             ##
