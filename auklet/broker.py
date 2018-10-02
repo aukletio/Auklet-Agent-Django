@@ -29,13 +29,15 @@ class MQTTClient(object):
         "event": "python/events/{}/{}",
     }
 
-    def __init__(self, broker_url, port, app_id, org_id, apikey, base_url):
+    def __init__(self, broker_url, port, app_id, org_id, apikey, base_url,
+                 auklet_dir):
         self.brokers = broker_url
         self.port = int(port)
         self.org_id = org_id
         self.app_id = app_id
         self.apikey = apikey
         self.base_url = base_url
+        self.auklet_dir = auklet_dir
         self.create_producer()
         topic_suffix = "{}/{}".format(
             self.org_id, self.app_id)
@@ -55,12 +57,19 @@ class MQTTClient(object):
                 # Allow for accessing redirect w/o including the
                 # Authorization token.
                 res = urlopen(e.geturl())
-        except URLError:
+        except (URLError, Exception) as e:
+            print(e)
             return False
-        filename = ".auklet/ca.pem"
-        create_file(filename)
-        f = open(filename, "wb")
-        f.write(res.read())
+        try:
+            filename = "{}/ca.pem".format(self.auklet_dir)
+            create_file(filename)
+            f = open(filename, "wb")
+            f.write(res.read())
+            print(f)
+            print(f.seek(0))
+            print(f.read())
+        except Exception as e:
+            print("TRYING TO CREATE FILE:", e)
         return True
 
     def on_disconnect(self, client, userdata, rc):
@@ -78,7 +87,7 @@ class MQTTClient(object):
             self.producer.enable_logger()
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
-            context.load_verify_locations(capath=".auklet/")
+            context.load_verify_locations(capath="{}/".format(self.auklet_dir))
             context.options &= ~ssl.OP_NO_SSLv3
             self.producer.tls_set_context()
             self.producer.on_disconnect = self.on_disconnect
