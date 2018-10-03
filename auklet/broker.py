@@ -25,8 +25,8 @@ class MQTTClient(object):
     password = None
     port = 8883
     producer_types = {
-        "monitoring": "python/profiler/{}/{}",
-        "event": "python/events/{}/{}",
+        "monitoring": "django/profiler/{}/{}",
+        "event": "django/events/{}/{}",
     }
 
     def __init__(self, broker_url, port, app_id, org_id, apikey, base_url,
