@@ -35,10 +35,11 @@ def post_auklet_url(url, apikey, data):
 def create_dir(dir_name=".auklet"):
     dirs = [os.getcwd(), os.path.expanduser("~")]
     for directory in dirs:
+        full_path = "{}/{}".format(directory, dir_name)
         if os.access(directory, os.W_OK):
-            if not os.path.exists(dir_name):
-                os.mkdir(dir_name)
-            return "{}{}".format(directory, dir_name)
+            if not os.path.exists(full_path):
+                os.mkdir(full_path)
+            return full_path
     return tempfile.gettempdir()
 
 
