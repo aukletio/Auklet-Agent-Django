@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Fixing response logic [#33](https://github.com/aukletio/Auklet-Agent-Django/pull/33) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.1.5](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.5)
 
 **Fixed bugs:**
