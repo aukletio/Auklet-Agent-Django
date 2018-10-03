@@ -54,12 +54,13 @@ class DjangoClient(object):
         if self.org_id is None:
             raise AukletConfigurationError(
                 "Please set organization in AUKLET_CONFIG settings")
-        create_dir()
+        self.auklet_dir = create_dir()
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
         self.broker = MQTTClient(self.broker_url, self.port, self.app_id,
-                                 self.org_id, self.apikey, self.base_url)
+                                 self.org_id, self.apikey, self.base_url,
+                                 self.auklet_dir)
         self.file_cache = FilenameCaches()
 
     def build_event_data(self, type, traceback):

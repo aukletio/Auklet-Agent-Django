@@ -3,6 +3,7 @@ import sys
 import uuid
 import hashlib
 import requests
+import tempfile
 
 from auklet.__about__ import __version__ as auklet_version
 
@@ -31,10 +32,14 @@ def post_auklet_url(url, apikey, data):
     return res.json()
 
 
-def create_dir(dir_name=".auklet"):
-    if not os.path.exists(dir_name):
-        os.mkdir(dir_name)
-    return True
+def create_dirg(dir_name=".auklet"):
+    dirs = [os.getcwd(), os.path.expanduser("~")]
+    for directory in dirs:
+        if os.access(directory, os.W_OK):
+            if not os.path.exists(".auklet"):
+                os.mkdir(dir_name)
+            return directory
+    return tempfile.gettempdir()
 
 
 def create_file(filename):
