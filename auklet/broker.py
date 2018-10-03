@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import os
 import ssl
 import logging
 import paho.mqtt.client as mqtt
@@ -24,44 +25,44 @@ class MQTTClient(object):
     username = None
     password = None
     port = 8883
-    producer_types = {
-        "monitoring": "python/profiler/{}/{}",
-        "event": "python/events/{}/{}",
-    }
 
-    def __init__(self, broker_url, port, app_id, org_id, apikey, base_url):
+    def __init__(self, broker_url, port, app_id, org_id, apikey, base_url,
+                 auklet_dir):
         self.brokers = broker_url
         self.port = int(port)
         self.org_id = org_id
         self.app_id = app_id
         self.apikey = apikey
         self.base_url = base_url
+        self.auklet_dir = auklet_dir
         self.create_producer()
         topic_suffix = "{}/{}".format(
             self.org_id, self.app_id)
         self.producer_types = {
-            "monitoring": "python/profiler/{}".format(topic_suffix),
-            "event": "python/events/{}".format(topic_suffix),
+            "monitoring": "django/profiler/{}".format(topic_suffix),
+            "event": "django/events/{}".format(topic_suffix),
         }
 
     def _get_certs(self):
-        url = Request(
-            build_url(self.base_url, "private/devices/certificates/"),
-            headers={"Authorization": "JWT {}".format(self.apikey)})
-        try:
+        if not os.path.isfile("{}/ca.pem".format(self.auklet_dir)):
+            url = Request(
+                build_url(self.base_url, "private/devices/certificates/"),
+                headers={"Authorization": "JWT {}".format(self.apikey)})
             try:
-                res = urlopen(url)
-            except HTTPError as e:
-                # Allow for accessing redirect w/o including the
-                # Authorization token.
-                res = urlopen(e.geturl())
-        except URLError:
-            return False
-        filename = ".auklet/ca.pem"
-        create_file(filename)
-        f = open(filename, "wb")
-        f.write(res.read())
-        return True
+                try:
+                    res = urlopen(url)
+                except HTTPError as e:
+                    # Allow for accessing redirect w/o including the
+                    # Authorization token.
+                    res = urlopen(e.geturl())
+            except URLError:
+                return False
+            filename = "{}/ca.pem".format(self.auklet_dir)
+            create_file(filename)
+            f = open(filename, "wb")
+            f.write(res.read())
+            return True
+        return False
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
@@ -78,7 +79,7 @@ class MQTTClient(object):
             self.producer.enable_logger()
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
-            context.load_verify_locations(capath=".auklet/")
+            context.load_verify_locations(capath="{}/".format(self.auklet_dir))
             context.options &= ~ssl.OP_NO_SSLv3
             self.producer.tls_set_context()
             self.producer.on_disconnect = self.on_disconnect
