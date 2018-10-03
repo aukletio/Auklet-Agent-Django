@@ -30,6 +30,8 @@ class MQTTClient(object):
                  auklet_dir):
         self.brokers = broker_url
         self.port = int(port)
+        print(self.brokers)
+        print(self.port)
         self.org_id = org_id
         self.app_id = app_id
         self.apikey = apikey
@@ -73,12 +75,15 @@ class MQTTClient(object):
             self.producer = mqtt.Client(client_id=self.app_id,
                                         protocol=mqtt.MQTTv311,
                                         transport="ssl")
+            print(self.app_id)
+            print(self.apikey)
             self.producer.username_pw_set(
                 username=self.app_id,
                 password=self.apikey)
             self.producer.enable_logger()
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
+            print(self.auklet_dir)
             context.load_verify_locations(capath="{}/".format(self.auklet_dir))
             context.options &= ~ssl.OP_NO_SSLv3
             self.producer.tls_set_context()
