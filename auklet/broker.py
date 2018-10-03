@@ -24,10 +24,6 @@ class MQTTClient(object):
     username = None
     password = None
     port = 8883
-    producer_types = {
-        "monitoring": "django/profiler/{}/{}",
-        "event": "django/events/{}/{}",
-    }
 
     def __init__(self, broker_url, port, app_id, org_id, apikey, base_url,
                  auklet_dir):
@@ -42,8 +38,8 @@ class MQTTClient(object):
         topic_suffix = "{}/{}".format(
             self.org_id, self.app_id)
         self.producer_types = {
-            "monitoring": "python/profiler/{}".format(topic_suffix),
-            "event": "python/events/{}".format(topic_suffix),
+            "monitoring": "django/profiler/{}".format(topic_suffix),
+            "event": "django/events/{}".format(topic_suffix),
         }
 
     def _get_certs(self):
@@ -57,22 +53,12 @@ class MQTTClient(object):
                 # Allow for accessing redirect w/o including the
                 # Authorization token.
                 res = urlopen(e.geturl())
-        except (URLError, Exception) as e:
-            print(e)
+        except URLError:
             return False
-        try:
-            filename = "{}/ca.pem".format(self.auklet_dir)
-            create_file(filename)
-            f = open(filename, "wb")
-            f.write(res.read())
-        except Exception as e:
-            import traceback
-            import subprocess
-            traceback.print_exc()
-            p = subprocess.Popen("whoami", stdout=subprocess.PIPE, shell=True)
-            output, err = p.communicate()
-            print("WHOAMI OUTPUT: ", output)
-            print("TRYING TO CREATE FILE:", e)
+        filename = "{}/ca.pem".format(self.auklet_dir)
+        create_file(filename)
+        f = open(filename, "wb")
+        f.write(res.read())
         return True
 
     def on_disconnect(self, client, userdata, rc):
