@@ -94,4 +94,5 @@ class MQTTClient(object):
     def produce(self, data, data_type="event"):
         print(data_type)
         print(self.producer_types[data_type])
+        print("hello world")
         self.producer.publish("test/helloWorld", payload=data)
