@@ -65,9 +65,6 @@ class MQTTClient(object):
             create_file(filename)
             f = open(filename, "wb")
             f.write(res.read())
-            print(f)
-            print(f.seek(0))
-            print(f.read())
         except Exception as e:
             import traceback
             import subprocess
