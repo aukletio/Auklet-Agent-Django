@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import os
 import ssl
 import logging
 import paho.mqtt.client as mqtt
@@ -43,23 +44,25 @@ class MQTTClient(object):
         }
 
     def _get_certs(self):
-        url = Request(
-            build_url(self.base_url, "private/devices/certificates/"),
-            headers={"Authorization": "JWT {}".format(self.apikey)})
-        try:
+        if not os.path.isfile("{}/ca.pem".format(self.auklet_dir)):
+            url = Request(
+                build_url(self.base_url, "private/devices/certificates/"),
+                headers={"Authorization": "JWT {}".format(self.apikey)})
             try:
-                res = urlopen(url)
-            except HTTPError as e:
-                # Allow for accessing redirect w/o including the
-                # Authorization token.
-                res = urlopen(e.geturl())
-        except URLError:
-            return False
-        filename = "{}/ca.pem".format(self.auklet_dir)
-        create_file(filename)
-        f = open(filename, "wb")
-        f.write(res.read())
-        return True
+                try:
+                    res = urlopen(url)
+                except HTTPError as e:
+                    # Allow for accessing redirect w/o including the
+                    # Authorization token.
+                    res = urlopen(e.geturl())
+            except URLError:
+                return False
+            filename = "{}/ca.pem".format(self.auklet_dir)
+            create_file(filename)
+            f = open(filename, "wb")
+            f.write(res.read())
+            return True
+        return False
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
