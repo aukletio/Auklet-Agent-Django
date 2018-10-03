@@ -42,6 +42,7 @@ class MQTTClient(object):
             "monitoring": "django/profiler/{}".format(topic_suffix),
             "event": "django/events/{}".format(topic_suffix),
         }
+        print(self.producer_types)
 
     def _get_certs(self):
         if not os.path.isfile("{}/ca.pem".format(self.auklet_dir)):
@@ -86,4 +87,6 @@ class MQTTClient(object):
             self.producer.loop_start()
 
     def produce(self, data, data_type="event"):
+        print(data_type)
+        print(self.producer_types[data_type])
         self.producer.publish(self.producer_types[data_type], payload=data)
