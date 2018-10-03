@@ -1,6 +1,6 @@
 # Changelog
 
-## Merged But Unreleased
+## [0.1.6](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6)
 
 **Fixed bugs:**
 

@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.6](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6)
+
 ### [0.1.6-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6-rc.1)
 
 **Fixed bugs:**
