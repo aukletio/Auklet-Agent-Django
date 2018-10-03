@@ -86,5 +86,5 @@ class MQTTClient(object):
             self.producer.connect_async(self.brokers, self.port)
             self.producer.loop_start()
 
-    def produce(self, data, data_type="monitoring"):
+    def produce(self, data, data_type="event"):
         self.producer.publish(self.producer_types[data_type], payload=data)
