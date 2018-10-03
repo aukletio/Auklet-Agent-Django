@@ -69,6 +69,10 @@ class MQTTClient(object):
             print(f.seek(0))
             print(f.read())
         except Exception as e:
+            import traceback
+            import subprocess
+            traceback.print_exc()
+            subprocess.call("whoami")
             print("TRYING TO CREATE FILE:", e)
         return True
 
