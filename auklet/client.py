@@ -55,7 +55,6 @@ class DjangoClient(object):
             raise AukletConfigurationError(
                 "Please set organization in AUKLET_CONFIG settings")
         self.auklet_dir = create_dir()
-        print(self.auklet_dir)
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
