@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Fixing default produce call [#30](https://github.com/aukletio/Auklet-Agent-Django/pull/30) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.1.4](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.4)
 
 **Fixed bugs:**
