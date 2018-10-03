@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Fixing cert access [#24](https://github.com/aukletio/Auklet-Agent-Django/pull/24) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.1.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.2)
 
 **Fixed bugs:**
