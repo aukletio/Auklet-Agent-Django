@@ -32,7 +32,7 @@ def post_auklet_url(url, apikey, data):
     return res.json()
 
 
-def create_dirg(dir_name=".auklet"):
+def create_dir(dir_name=".auklet"):
     dirs = [os.getcwd(), os.path.expanduser("~")]
     for directory in dirs:
         if os.access(directory, os.W_OK):
