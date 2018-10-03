@@ -61,8 +61,7 @@ class MQTTClient(object):
             create_file(filename)
             f = open(filename, "wb")
             f.write(res.read())
-            return True
-        return False
+        return True
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
