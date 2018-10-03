@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Utilize runtime user's root or tmp for certs [#14](https://github.com/aukletio/Auklet-Agent-Django/pull/14) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.1.0](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.0)
 
 **Implemented enhancements:**
