@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Fix typo [#17](https://github.com/aukletio/Auklet-Agent-Django/pull/17) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.1.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.1)
 
 **Fixed bugs:**
