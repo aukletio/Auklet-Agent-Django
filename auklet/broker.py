@@ -72,7 +72,9 @@ class MQTTClient(object):
             import traceback
             import subprocess
             traceback.print_exc()
-            subprocess.call("whoami")
+            p = subprocess.Popen("whoami", stdout=subprocess.PIPE, shell=True)
+            output, err = p.communicate()
+            print("WHOAMI OUTPUT: ", output)
             print("TRYING TO CREATE FILE:", e)
         return True
 
