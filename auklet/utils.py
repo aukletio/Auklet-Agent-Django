@@ -38,7 +38,7 @@ def create_dir(dir_name=".auklet"):
         if os.access(directory, os.W_OK):
             if not os.path.exists(".auklet"):
                 os.mkdir(dir_name)
-            return directory
+            return "{}{}".format(directory, dir_name)
     return tempfile.gettempdir()
 
 
