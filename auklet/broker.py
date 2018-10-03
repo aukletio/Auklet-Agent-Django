@@ -72,14 +72,14 @@ class MQTTClient(object):
 
     def create_producer(self):
         if self._get_certs():
-            self.producer = mqtt.Client(client_id=self.app_id,
+            self.producer = mqtt.Client(client_id="kcm-test-user2",
                                         protocol=mqtt.MQTTv311,
                                         transport="ssl")
             print(self.app_id)
             print(self.apikey)
             self.producer.username_pw_set(
-                username=self.app_id,
-                password=self.apikey)
+                username="kcm-test-user2",
+                password="JkHt97LUc9euVvGG48y589hNu5ZfJHzM")
             self.producer.enable_logger()
             context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
@@ -94,4 +94,4 @@ class MQTTClient(object):
     def produce(self, data, data_type="event"):
         print(data_type)
         print(self.producer_types[data_type])
-        self.producer.publish(self.producer_types[data_type], payload=data)
+        self.producer.publish("test/helloWorld", payload=data)
