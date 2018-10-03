@@ -32,22 +32,14 @@ def post_auklet_url(url, apikey, data):
     return res.json()
 
 
-def create_dir(dir_name=".auklet"):
-    try:
-        if not os.path.exists(dir_name):
-            os.mkdir(dir_name)
-        return dir_name
-    except os.error.FileExistsError:
-        return dir_name
-    except (OSError, IOError, Exception):
-        try:
-            home = os.path.expanduser("~")
-            dir_name = "{}/{}".format(home, dir_name)
-            if not os.path.exists(dir_name):
+def create_dirg(dir_name=".auklet"):
+    dirs = [os.getcwd(), os.path.expanduser("~")]
+    for directory in dirs:
+        if os.access(directory, os.W_OK):
+            if not os.path.exists(".auklet"):
                 os.mkdir(dir_name)
-            return dir_name
-        except IOError:
-            return tempfile.gettempdir()
+            return directory
+    return tempfile.gettempdir()
 
 
 def create_file(filename):
