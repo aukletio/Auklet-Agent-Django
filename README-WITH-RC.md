@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.2.0-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0-rc.2)
+
+### [0.2.0-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0-rc.1)
+
+**Implemented enhancements:**
+
+- Minor Clean Up [#36](https://github.com/aukletio/Auklet-Agent-Django/pull/36) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.1.6](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6)
 
 ### [0.1.6-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6-rc.1)

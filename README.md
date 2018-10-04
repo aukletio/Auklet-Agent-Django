@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Implemented enhancements:**
+
+- Minor Clean Up [#36](https://github.com/aukletio/Auklet-Agent-Django/pull/36) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.1.6](https://github.com/aukletio/Auklet-Agent-Django/tree/0.1.6)
 
 **Fixed bugs:**
