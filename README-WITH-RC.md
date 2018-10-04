@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.2.0](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0)
+
 ### [0.2.0-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0-rc.2)
 
 ### [0.2.0-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0-rc.1)
