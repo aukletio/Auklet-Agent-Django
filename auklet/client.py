@@ -83,8 +83,7 @@ class DjangoClient(object):
         return msgpack.packb(event_data, use_bin_type=False)
 
     def produce_event(self, type, traceback):
-        self.broker.produce(self.build_msgpack_event_data(type, traceback),
-                            "event")
+        self.broker.produce(self.build_msgpack_event_data(type, traceback))
 
 
 def init_client():
