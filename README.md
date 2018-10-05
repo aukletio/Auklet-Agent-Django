@@ -54,6 +54,15 @@ AUKLET_CONFIG = {
     "version": "1.2.3"
 }
 ```
+To create a release in the auklet api and to get your git commit hash:
+
+```bash
+curl -X POST https://api.auklet.io/v1/releases/ \
+            -H "Content-Type: application/json" \
+            -H "Authorization: JWT <API_KEY>" \
+            -d '{"application": "<APP_ID>", "commit_hash": "'$(git rev-parse HEAD)'"}'
+```
+You can get a pre constructed curl request from the setup directions at [Auklet][https://app.auklet.io/]
 
 ### Middleware Error Handling
 To set up default Django middleware error handling, add the Auklet middleware to the end of your middleware configs:
