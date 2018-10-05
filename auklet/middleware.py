@@ -16,6 +16,7 @@ except ImportError:
 class AukletMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         exc_type, _, traceback = sys.exc_info()
+        print("IN PROCESS EXCEPTION: ", exc_type, traceback)
         client = get_client()
         client.produce_event(exc_type, traceback)
 
@@ -32,12 +33,14 @@ class WSGIAukletMiddleware(object):
     def __call__(self, environ, start_response):
         """Call the application can catch exceptions."""
         app = None
+        print("IN WSGI MIDDLEWARE")
         try:
             app = self.application(environ, start_response)
             for item in app:
                 yield item
         # Catch any exception
         except Exception:
+            print("IN EXCEPTION OF WSGI MIDDLEWARE")
             self.handle_exception(environ)
 
         if hasattr(app, 'close'):
@@ -45,5 +48,6 @@ class WSGIAukletMiddleware(object):
 
     def handle_exception(self, environ=None):
         exc_type, _, traceback = sys.exc_info()
+        print("HANDLE EXCEPTION: ", exc_type, traceback)
         client = get_client()
         client.produce_event(exc_type, traceback)
