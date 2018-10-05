@@ -34,7 +34,6 @@ class MQTTClient(object):
         self.apikey = apikey
         self.base_url = base_url
         self.auklet_dir = auklet_dir
-        self.create_producer()
         topic_suffix = "{}/{}".format(self.org_id, self.app_id)
         self.producer_types = {
             "monitoring": "django/profiler/{}".format(topic_suffix),
@@ -80,10 +79,12 @@ class MQTTClient(object):
             context.options &= ~ssl.OP_NO_SSLv3
             self.producer.tls_set_context()
             self.producer.on_disconnect = self.on_disconnect
-            self.producer.connect_async(self.brokers, self.port)
-            self.producer.loop_start()
+            self.producer.connect(self.brokers, self.port)
 
     def produce(self, data, data_type="event"):
-        self.producer.publish(
+        self.create_producer()
+        message = self.producer.publish(
             self.producer_types[data_type], payload=data, qos=1
         )
+        message.wait_for_publish()
+        self.producer.disconnect()
