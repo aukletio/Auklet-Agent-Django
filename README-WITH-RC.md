@@ -1,5 +1,13 @@
 # Changelog
 
+### [0.2.2-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.2-rc.2)
+
+### [0.2.2-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.2-rc.1)
+
+**Fixed bugs:**
+
+- Remove WSGI Middleware [#42](https://github.com/aukletio/Auklet-Agent-Django/pull/42) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.2.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.1)
 
 ### [0.2.1-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.1-rc.2)

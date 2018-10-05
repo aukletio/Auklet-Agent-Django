@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Remove WSGI Middleware [#42](https://github.com/aukletio/Auklet-Agent-Django/pull/42) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.2.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.1)
 
 **Fixed bugs:**
