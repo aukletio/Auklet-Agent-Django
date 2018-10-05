@@ -18,32 +18,3 @@ class AukletMiddleware(MiddlewareMixin):
         exc_type, _, traceback = sys.exc_info()
         client = get_client()
         client.produce_event(exc_type, traceback)
-
-
-class WSGIAukletMiddleware(object):
-    """
-    A WSGI middleware which will attempt to capture any
-    uncaught exceptions and send them to Auklet.
-    """
-
-    def __init__(self, application):
-        self.application = application
-
-    def __call__(self, environ, start_response):
-        """Call the application can catch exceptions."""
-        app = None
-        try:
-            app = self.application(environ, start_response)
-            for item in app:
-                yield item
-        # Catch any exception
-        except Exception:
-            self.handle_exception(environ)
-
-        if hasattr(app, 'close'):
-            app.close()
-
-    def handle_exception(self, environ=None):
-        exc_type, _, traceback = sys.exc_info()
-        client = get_client()
-        client.produce_event(exc_type, traceback)
