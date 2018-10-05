@@ -81,18 +81,6 @@ If you are already using an error handling middleware which returns a response, 
 got_request_exception.send(sender=self, request=request)
 ```
 
-If you wish to set up Auklet using a WSGI middleware instead of the default Django middleware, you can do so as shown below. Please note that you should only use WSGI or Django middleware, not both.
-
-```python
-import os
-from django.core.wsgi import get_wsgi_application
-from django.conf import settings
-from auklet.middleware import WSGIAukletMiddleware
-
-application = get_wsgi_application()
-application = WSGIAukletMiddleware(application)
-```
-
 ## Resources
 - [Auklet][brochure_site]
 - [Python Documentation](https://docs.auklet.io/docs/python-integration)
