@@ -36,6 +36,7 @@ class WSGIAukletMiddleware(object):
             app = self.application(environ, start_response)
             for item in app:
                 yield item
+            print("AFTER LOOP")
         # Catch any exception
         except:
             print("IN EXCEPTION OF WSGI MIDDLEWARE")
