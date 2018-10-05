@@ -61,7 +61,6 @@ class MQTTClient(object):
         return True
 
     def on_disconnect(self, client, userdata, rc):
-        print("ON DISCONNECT: ", rc)
         if rc != 0:
             logging.debug("Unexpected disconnection from MQTT")
 
@@ -84,11 +83,8 @@ class MQTTClient(object):
 
     def produce(self, data, data_type="event"):
         self.create_producer()
-        print(data)
-        print(data_type)
         message = self.producer.publish(
             self.producer_types[data_type], payload=data, qos=1
         )
-        print(message.rc)
         message.wait_for_publish()
         self.producer.disconnect()

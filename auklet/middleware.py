@@ -16,6 +16,5 @@ except ImportError:
 class AukletMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         exc_type, _, traceback = sys.exc_info()
-        print("IN PROCESS EXCEPTION: ", exc_type, traceback)
         client = get_client()
         client.produce_event(exc_type, traceback)
