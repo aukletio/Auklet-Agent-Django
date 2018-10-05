@@ -31,17 +31,16 @@ class WSGIAukletMiddleware(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        """Call the application can catch exceptions."""
         app = None
-        print("IN WSGI MIDDLEWARE")
         try:
             app = self.application(environ, start_response)
             for item in app:
                 yield item
         # Catch any exception
-        except Exception:
+        except:
             print("IN EXCEPTION OF WSGI MIDDLEWARE")
             self.handle_exception(environ)
+            raise
 
         if hasattr(app, 'close'):
             app.close()
