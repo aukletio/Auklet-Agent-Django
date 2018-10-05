@@ -21,7 +21,6 @@ __all__ = ["MQTTClient"]
 class MQTTClient(object):
     producer = None
     brokers = "mq.feeds.auklet.io"
-    client = None
     username = None
     password = None
     port = 8883
@@ -36,8 +35,7 @@ class MQTTClient(object):
         self.base_url = base_url
         self.auklet_dir = auklet_dir
         self.create_producer()
-        topic_suffix = "{}/{}".format(
-            self.org_id, self.app_id)
+        topic_suffix = "{}/{}".format(self.org_id, self.app_id)
         self.producer_types = {
             "monitoring": "django/profiler/{}".format(topic_suffix),
             "event": "django/events/{}".format(topic_suffix),
@@ -61,8 +59,7 @@ class MQTTClient(object):
             create_file(filename)
             f = open(filename, "wb")
             f.write(res.read())
-            return True
-        return False
+        return True
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
@@ -86,5 +83,7 @@ class MQTTClient(object):
             self.producer.connect_async(self.brokers, self.port)
             self.producer.loop_start()
 
-    def produce(self, data, data_type="monitoring"):
-        self.producer.publish(self.producer_types[data_type], payload=data)
+    def produce(self, data, data_type="event"):
+        self.producer.publish(
+            self.producer_types[data_type], payload=data, qos=1
+        )
