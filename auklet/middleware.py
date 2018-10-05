@@ -14,18 +14,25 @@ except ImportError:
     MiddlewareMixin = object
 
 
+def report_exception():
+    exc_type, _, traceback = sys.exc_info()
+    print("HANDLE EXCEPTION: ", exc_type, traceback)
+    client = get_client()
+    client.produce_event(exc_type, traceback)
+
+
 @contextmanager
-def handle_exception(environ):
+def handle_exception():
     try:
         yield
     except (StopIteration, GeneratorExit):
-        # We cause these occasionally and don't want to report them
+        raise
+    except SystemExit as e:
+        if e.code != 0:
+            report_exception()
         raise
     except Exception:
-        exc_type, _, traceback = sys.exc_info()
-        print("HANDLE EXCEPTION: ", exc_type, traceback)
-        client = get_client()
-        client.produce_event(exc_type, traceback)
+        report_exception()
         raise
 
 
@@ -46,7 +53,7 @@ class ClosingIterator(object):
 
     def __next__(self):
         try:
-            with handle_exception(self.environ):
+            with handle_exception():
                 return next(self.iterable)
         except StopIteration:
             # We auto close here if we reach the end because some WSGI
@@ -61,7 +68,7 @@ class ClosingIterator(object):
             return
         try:
             if self._close is not None:
-                with handle_exception(self.environ):
+                with handle_exception():
                     self._close()
         finally:
             self.closed = True
@@ -69,10 +76,7 @@ class ClosingIterator(object):
 
 class AukletMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
-        exc_type, _, traceback = sys.exc_info()
-        print("IN PROCESS EXCEPTION: ", exc_type, traceback)
-        client = get_client()
-        client.produce_event(exc_type, traceback)
+        report_exception()
 
 
 class WSGIAukletMiddleware(object):
@@ -85,6 +89,6 @@ class WSGIAukletMiddleware(object):
         self.application = application
 
     def __call__(self, environ, start_response):
-        with handle_exception(environ):
+        with handle_exception():
             iterable = self.application(environ, start_response)
         return ClosingIterator(iterable, environ)
