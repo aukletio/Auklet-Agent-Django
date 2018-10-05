@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- Add release instructions to readme [#39](https://github.com/aukletio/Auklet-Agent-Django/pull/39) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.2.0](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.0)
 
 **Implemented enhancements:**
