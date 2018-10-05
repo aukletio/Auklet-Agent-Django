@@ -42,8 +42,18 @@ AUKLET_CONFIG = {
 To authorize your application you need to provide both an API key and app ID. These values are available in the connection settings of your application as well as during initial setup.
 
 
-### Release Tracking
-Optionally, you can track releases and identify which servers are running what variant of code. To do this you may provide the commit hash of your deployed code and a version string you can modify. This release value needs to be passed into the settings variable through the `release` key and your custom version must be passed via the `version` key. The `release` value needs to be the commit hash that represents the deployed version of your application. And the `version` value is a string that you can set to whatever value you wish to define your versions.
+### Optional: Release Tracking
+You can track releases and identify which servers are running what variant of code. To do this, you may provide the git commit hash of your deployed code and a version string you can modify. This release value should be passed into the settings variable through the release key, and your custom version should be passed via the version key. The release value must be the git commit hash that represents the deployed version of your application. The version value is a string that you may set to whatever value you wish to define your versions. Please note that you can provide either a release value, version value, or both.
+* Providing <strong>release</strong> enables code snippets to be shown for identified errors if you’ve linked your GitHub.
+* Including <strong>version</strong> allows you to track what version of code had the issue.
+
+```bash
+curl -X POST https://api.auklet.io/v1/releases/ \
+            -H "Content-Type: application/json" \
+            -H "Authorization: JWT <API_KEY>" \
+            -d '{"application": "<APP_ID>", "release": "'$(git rev-parse HEAD)'", "version": "<YOUR_DEFINED_VERSION>"}'
+```
+You can get a pre constructed curl request from the setup directions at [Auklet][https://app.auklet.io/]
 
 ```python
 AUKLET_CONFIG = {
