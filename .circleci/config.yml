@@ -30,7 +30,7 @@ jobs:
             - run:
                 name: Duplicate build check
                 command: |
-                  bash .devops/duplicateBuildCheck.sh
+                  . .devops/duplicateBuildCheck.sh
             - run:
                 name: Install jq
                 command: |
@@ -66,9 +66,10 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                      bash .devops/duplicateBuildCheck.sh
+                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh beta
-                      bash .devops/duplicateBuildCheck.sh done
+                      touch ~/.buildIsDone
+                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi
             - run:
@@ -77,14 +78,15 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "rc" ]; then
-                      bash .devops/duplicateBuildCheck.sh
+                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh rc
-                      bash .devops/duplicateBuildCheck.sh
+                      . .devops/duplicateBuildCheck.sh
                       bash .devops/post-release.sh
                       # Need to checkout rc again so we can run more scripts.
                       git checkout rc
                       bash .devops/updateProdReleasePr.sh
-                      bash .devops/duplicateBuildCheck.sh done
+                      touch ~/.buildIsDone
+                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi
             - run:
@@ -93,12 +95,13 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "release" ]; then
-                      bash .devops/duplicateBuildCheck.sh
+                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh release
-                      bash .devops/duplicateBuildCheck.sh
+                      . .devops/duplicateBuildCheck.sh
                       bash .devops/post-release.sh
                       # Need to checkout release again so we can run more scripts.
                       git checkout release
-                      bash .devops/duplicateBuildCheck.sh done
+                      touch ~/.buildIsDone
+                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi

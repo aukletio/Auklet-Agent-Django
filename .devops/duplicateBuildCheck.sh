@@ -10,7 +10,7 @@ if [[ ! -f ~/.localCircleBuild && ! -f ~/.prCircleBuild ]]; then
   fi
   ACTIVE_BUILD_FILE='/home/circleci/.activeBuild'
   BUILD_STATUS_PATH="s3://$BUILD_STATUS_BUCKET/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_SHA1"
-  if [[ "$1" == 'done' ]]; then
+  if [[ -f ~/.buildIsDone ]]; then
     echo 'Flagging build as complete...'
     echo 'DONE' > $ACTIVE_BUILD_FILE
     aws s3 cp $ACTIVE_BUILD_FILE $BUILD_STATUS_PATH
@@ -27,9 +27,11 @@ if [[ ! -f ~/.localCircleBuild && ! -f ~/.prCircleBuild ]]; then
     elif [[ "$ACTIVE_BUILD_NUM" == 'DONE' ]]; then
       echo 'INFO: a CircleCI build has already completed for this commit hash. This build will finish immediately.'
       circleci step halt
+      exit
     elif (( $CIRCLE_BUILD_NUM < $ACTIVE_BUILD_NUM )); then
       echo 'INFO: there is a newer CircleCI build for this commit hash. This build will finish immediately.'
       circleci step halt
+      exit
     else
       echo 'This is the newest build for this VCS revision.'
       echo $CIRCLE_BUILD_NUM > $ACTIVE_BUILD_FILE
