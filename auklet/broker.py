@@ -65,9 +65,7 @@ class MQTTClient(object):
             logging.debug("Unexpected disconnection from MQTT")
 
     def create_producer(self):
-        print("creating producer")
         if self._get_certs():
-            print("certs do not exist")
             self.producer = mqtt.Client(client_id=self.app_id,
                                         protocol=mqtt.MQTTv311,
                                         transport="ssl")
@@ -82,17 +80,12 @@ class MQTTClient(object):
             self.producer.tls_set_context()
             self.producer.on_disconnect = self.on_disconnect
             self.producer.connect(self.brokers, self.port)
-            print("created producer")
         return True
 
     def produce(self, data, data_type="event"):
         self.create_producer()
-        print('publishing')
         message = self.producer.publish(
             self.producer_types[data_type], payload=data
         )
-        print("called publish")
         message.wait_for_publish()
-        print("waiting for publish")
         self.producer.disconnect()
-        print('disconnecting')
