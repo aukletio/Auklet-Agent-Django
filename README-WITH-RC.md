@@ -1,5 +1,11 @@
 # Changelog
 
+### [0.2.3-rc.1](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.3-rc.1)
+
+**Fixed bugs:**
+
+- QoS Removal & Preemptive Certs [#45](https://github.com/aukletio/Auklet-Agent-Django/pull/45) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.2.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.2)
 
 ### [0.2.2-rc.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.2-rc.2)

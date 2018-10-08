@@ -1,5 +1,11 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Fixed bugs:**
+
+- QoS Removal & Preemptive Certs [#45](https://github.com/aukletio/Auklet-Agent-Django/pull/45) ([bleib1dj](https://github.com/bleib1dj))
+
 ## [0.2.2](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.2)
 
 **Fixed bugs:**
