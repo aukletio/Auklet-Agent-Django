@@ -58,9 +58,11 @@ class DjangoClient(object):
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
         self.agent_version = get_agent_version()
-        self.broker = MQTTClient(self.broker_url, self.port, self.app_id,
-                                 self.org_id, self.apikey, self.base_url,
-                                 self.auklet_dir)
+        self.broker = MQTTClient(
+            self.broker_url, self.port, self.app_id,
+            self.org_id, self.apikey, self.base_url,
+            self.auklet_dir
+        )
         self.broker._get_certs()
         self.file_cache = FilenameCaches()
 
