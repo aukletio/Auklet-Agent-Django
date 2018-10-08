@@ -89,7 +89,7 @@ class MQTTClient(object):
         self.create_producer()
         print('publishing')
         message = self.producer.publish(
-            self.producer_types[data_type], payload=data, qos=1
+            self.producer_types[data_type], payload=data
         )
         print("called publish")
         message.wait_for_publish()
