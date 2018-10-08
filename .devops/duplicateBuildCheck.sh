@@ -13,9 +13,12 @@ if [[ ! -f ~/.localCircleBuild && ! -f ~/.prCircleBuild ]]; then
     echo 'Flagging build as complete...'
     echo 'DONE' | aws s3 cp - $BUILD_STATUS_PATH
   else
+    ACTIVE_BUILD_FILE='/home/circleci/.activeBuild'
     set +e
-    ACTIVE_BUILD_NUM=$(aws s3 cp $BUILD_STATUS_PATH - 2>/dev/null)
+    aws s3 cp $BUILD_STATUS_PATH $ACTIVE_BUILD_FILE >/dev/null 2>&1
     set -e
+    touch $ACTIVE_BUILD_FILE
+    ACTIVE_BUILD_NUM=$(cat $ACTIVE_BUILD_FILE)
     if [[ "$ACTIVE_BUILD_NUM" == '' ]]; then
       echo 'This is the first build for this VCS revision.'
       echo $CIRCLE_BUILD_NUM | aws s3 cp - $BUILD_STATUS_PATH
