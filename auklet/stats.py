@@ -9,7 +9,39 @@ except ImportError:  # pragma: no cover
     # installation of psutil which we cannot configure currently
     psutil = None
 
-__all__ = ['Event', 'SystemMetrics', 'FilenameCaches']
+__all__ = ['Function', 'Stack', 'Event', 'SystemMetrics', 'FilenameCaches']
+
+
+class Function(object):
+    __slots__ = ['samples', 'line_num', 'func_name', 'file_path',
+                 'children', 'parent']
+
+    def __init__(self, line_num, func_name, file_path="",
+                 parent=None, samples=1):
+        self.line_num = line_num
+        self.func_name = func_name
+        self.parent = parent
+        self.children = []
+        self.file_path = file_path
+        self.samples = samples
+
+    def __str__(self):
+        pp = pprint.PrettyPrinter()
+        return pp.pformat(dict(self))
+
+    def __iter__(self):
+        yield "functionName", self.func_name
+        yield "nSamples", self.samples
+        yield "lineNumber", self.line_num
+        yield "filePath", self.file_path
+        yield "callees", [dict(item) for item in self.children]
+
+    def has_child(self, test_child):
+        for child in self.children:
+            if test_child.func_name == child.func_name \
+                    and test_child.file_path == child.file_path:
+                return child
+        return False
 
 
 class Event(object):
@@ -93,3 +125,64 @@ class SystemMetrics(object):
                                      self.prev_outbound) / interval
             self.prev_inbound = network.bytes_recv
             self.prev_outbound = network.bytes_sent
+
+
+class Stack(object):
+    __slots__ = ['root_func', 'filename_cache']
+
+    def __init__(self):
+        self.root_func = None
+        self.filename_cache = FilenameCaches()
+
+    def _create_frame_func(self, frame, root=False, parent=None):
+        if root:
+            return Function(
+                line_num=1,
+                func_name="root",
+                parent=None,
+                file_path="",
+                samples=1
+            )
+
+        file_path = self.filename_cache.get_filename(frame.f_code, frame)
+        return Function(
+            line_num=frame.f_code.co_firstlineno,
+            func_name=frame.f_code.co_name,
+            parent=parent,
+            file_path=file_path
+        )
+
+    def _build_stack(self, new_stack):
+        root_func = self._create_frame_func(None, True)
+        parent_func = root_func
+        for frame in reversed(new_stack):
+            current_func = self._create_frame_func(
+                frame, parent=parent_func)
+            parent_func.children.append(current_func)
+            parent_func = current_func
+        return root_func
+
+    def _update_sample_count(self, parent, new_parent):
+        if not new_parent.children:
+            return True
+        new_child = new_parent.children[0]
+        has_child = parent.has_child(new_child)
+        if has_child:
+            has_child.samples += 1
+            return self._update_sample_count(has_child, new_child)
+        parent.children.append(new_child)
+
+    def update_hash(self, new_stack):
+        new_tree_root = self._build_stack(new_stack)
+        if self.root_func is None:
+            self.root_func = new_tree_root
+            return self.root_func
+        self._update_sample_count(self.root_func, new_tree_root)
+
+    def clear_root(self):
+        self.root_func = None
+        return True
+
+    def get(self):
+        if self.root_func is not None:
+            return dict(self.root_func)
