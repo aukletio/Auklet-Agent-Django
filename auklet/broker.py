@@ -80,11 +80,12 @@ class MQTTClient(object):
             self.producer.tls_set_context()
             self.producer.on_disconnect = self.on_disconnect
             self.producer.connect(self.brokers, self.port)
+        return True
 
     def produce(self, data, data_type="event"):
         self.create_producer()
         message = self.producer.publish(
-            self.producer_types[data_type], payload=data, qos=1
+            self.producer_types[data_type], payload=data
         )
         message.wait_for_publish()
         self.producer.disconnect()
