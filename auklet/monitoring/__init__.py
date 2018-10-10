@@ -20,10 +20,6 @@ class Monitoring(object):
 
     total_samples = 0
 
-    emission_rate = 60000  # 60 seconds
-    network_rate = 10000  # 10 seconds
-    hour = 3600000  # 1 hour
-
     def __init__(self):
         signal.signal(self.sig, self.sample)
         signal.siginterrupt(self.sig, False)
