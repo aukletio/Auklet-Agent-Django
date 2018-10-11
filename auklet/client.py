@@ -6,6 +6,7 @@ from uuid import uuid4
 from django.conf import settings
 
 from auklet.errors import AukletConfigurationError
+from auklet.monitoring import Monitoring
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import get_agent_version, get_device_ip, get_mac, \
@@ -23,18 +24,20 @@ except ImportError:
 _client = None
 
 
-def get_client():
+def get_client(monitor=False):
     """
     Get an Auklet Client
     """
     global _client
+    if monitor:
+        return DjangoClient(monitor)
     if _client is None:
-        _client = DjangoClient()
+        _client = DjangoClient(monitor)
     return _client
 
 
 class DjangoClient(object):
-    def __init__(self):
+    def __init__(self, monitor=False):
         auklet_config = settings.AUKLET_CONFIG
         self.apikey = auklet_config.get("api_key", None)
         self.app_id = auklet_config.get("application", None)
@@ -54,6 +57,8 @@ class DjangoClient(object):
         if self.org_id is None:
             raise AukletConfigurationError(
                 "Please set organization in AUKLET_CONFIG settings")
+        if monitor:
+            self.monitoring = Monitoring()
         self.auklet_dir = create_dir()
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
@@ -81,12 +86,32 @@ class DjangoClient(object):
         event_dict['device'] = None
         return event_dict
 
+    def build_stack_data(self, stack):
+        return {
+            "application": client.app_id,
+            "publicIP": get_device_ip(),
+            "id": str(uuid4()),
+            "timestamp": int(round(time() * 1000)),
+            "macAddressHash": self.mac_hash,
+            "release": self.release,
+            "agentVersion": get_agent_version(),
+            "tree": stack,
+            "device": None,
+            "version": client.version
+        }
+
+    def build_msgpack_stack(self, stack):
+        return msgpack.packb(self.build_stack_data(stack), use_bin_type=False)
+
     def build_msgpack_event_data(self, type, traceback):
         event_data = self.build_event_data(type, traceback)
         return msgpack.packb(event_data, use_bin_type=False)
 
     def produce_event(self, type, traceback):
         self.broker.produce(self.build_msgpack_event_data(type, traceback))
+
+    def produce_stack(self, stack):
+        self.broker.produce(self.build_msgpack_stack(stack), "monitoring")
 
 
 def init_client():
