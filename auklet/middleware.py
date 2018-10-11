@@ -19,10 +19,10 @@ class AukletMiddleware(MiddlewareMixin):
         client = get_client()
         client.produce_event(exc_type, traceback)
 
-    def process_view(self, request, view_func, callback_args, callback_kwargs):
+    def process_view(self, request, view_func, view_args, view_kwargs):
         client = get_client(monitor=True)
         client.monitoring.start()
-        response = view_func(request, *callback_args, **callback_kwargs)
+        response = view_func(request, *view_args, **view_kwargs)
         client.monitoring.stop()
         client.produce_stack(client.monitoring.get_stack())
         return response
