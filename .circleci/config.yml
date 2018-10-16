@@ -21,16 +21,17 @@ jobs:
             ##
             # SETUP
             ##
-            - add_ssh_keys
-            - checkout
             - run:
                 name: Flag local/PR builds
                 command: |
-                  bash .devops/flagBuilds.sh
-            - run:
-                name: Duplicate build check
-                command: |
-                  . .devops/duplicateBuildCheck.sh
+                    if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
+                      touch ~/.localCircleBuild
+                    fi
+                    if [[ "$CIRCLE_PR_USERNAME" != '' ]]; then
+                      touch ~/.prCircleBuild
+                    fi
+            - add_ssh_keys
+            - checkout
             - run:
                 name: Install jq
                 command: |
@@ -66,10 +67,7 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh beta
-                      touch ~/.buildIsDone
-                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi
             - run:
@@ -78,15 +76,11 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "rc" ]; then
-                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh rc
-                      . .devops/duplicateBuildCheck.sh
                       bash .devops/post-release.sh
                       # Need to checkout rc again so we can run more scripts.
                       git checkout rc
                       bash .devops/updateProdReleasePr.sh
-                      touch ~/.buildIsDone
-                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi
             - run:
@@ -95,13 +89,7 @@ jobs:
                   set -ou pipefail
                   if [[ ! -f ~/.localCircleBuild ]]; then
                     if [ "${CIRCLE_BRANCH}" == "release" ]; then
-                      . .devops/duplicateBuildCheck.sh
                       bash .devops/deploy.sh release
-                      . .devops/duplicateBuildCheck.sh
                       bash .devops/post-release.sh
-                      # Need to checkout release again so we can run more scripts.
-                      git checkout release
-                      touch ~/.buildIsDone
-                      . .devops/duplicateBuildCheck.sh
                     fi
                   fi
