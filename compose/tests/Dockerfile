@@ -11,7 +11,7 @@ ADD ./auklet /auklet
 ADD ./tests /tests
 ADD ./setup.py /setup.py
 ADD ./README.md /README.md
-ADD ./settings.py /settings.py
+ADD ./config /config
 ADD ./requirements.txt /requirements.txt
 ADD ./tests.txt /tests.txt
 ADD ./.coveragerc /.coveragerc

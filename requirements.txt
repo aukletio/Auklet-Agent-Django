@@ -5,3 +5,4 @@ pidigits==0.5
 mock==2.0.0
 requests
 msgpack==0.5.6
+Django==2.1.2

@@ -45,14 +45,39 @@ jobs:
                   sed -i -e "s/__version__ = .*/__version__ = '$(cat ~/.version440)'/" auklet/__about__.py
                   VERSION_SIMPLE=$(cat ~/.version | xargs | cut -f1 -d"+")
                   sed -i -e "s/__semver__ = .*/__semver__ = '$VERSION_SIMPLE'/" auklet/__about__.py
+            - run:
+                name: Upgrade Docker Compose
+                command: |
+                  set -x
+                  curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > ./docker-compose
+                  chmod +x ./docker-compose
+                  sudo mv ./docker-compose /usr/local/bin
 
             ##
             # RESTORE CACHES
             ##
 
             ##
+            # DOCKER
+            ##
+            - run:
+                name: Show Docker Versions
+                command: |
+                  set -x
+                  docker --version
+                  docker-compose --version
+            - run:
+                name: Build Docker Application
+                command: |
+                  set -x
+                  docker-compose build
+            ##
             # TESTS
             ##
+            - run:
+                name: Run Tests
+                command: |
+                  docker-compose up
 
             ##
             # SAVE CACHES
