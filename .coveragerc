@@ -1,0 +1,7 @@
+[run]
+source =
+    auklet
+
+omit =
+    auklet/__about__.py
+    auklet/__init__.py
