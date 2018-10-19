@@ -100,8 +100,12 @@ class SystemMetrics(object):
 
 
 def contains_profiler(func_tuple):
-    """Helper function that checks to see if the tuple contains
-    the INVALID_PROFILE_FUNC in any string value of the tuple."""
+    '''
+    Remove profiler function call which can sometimes be first
+
+    :param func_tuple:
+    :return:
+    '''
     has_profiler = False
     for value in func_tuple:
         if isinstance(value, six.string_types):
@@ -114,7 +118,7 @@ class AukletProfilerStats(Stats):
 
     def get_root_func(self):
         if self.root is None:
-            for func, (cc, nc, tt, ct, callers) in self.stats.items():
+            for func, (_, _, _, _, callers) in self.stats.items():
                 if len(callers) == 0 and not contains_profiler(func):
                     self.root = func
                     break
