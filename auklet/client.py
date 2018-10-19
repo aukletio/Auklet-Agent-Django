@@ -6,7 +6,7 @@ from uuid import uuid4
 from django.conf import settings
 
 from auklet.errors import AukletConfigurationError
-from auklet.monitoring import Monitoring
+from auklet.monitoring import AukletViewProfiler
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import get_agent_version, get_device_ip, get_mac, \
@@ -24,20 +24,18 @@ except ImportError:
 _client = None
 
 
-def get_client(monitor=False):
+def get_client():
     """
     Get an Auklet Client
     """
     global _client
-    if monitor:
-        return DjangoClient(monitor)
     if _client is None:
-        _client = DjangoClient(monitor)
+        _client = DjangoClient()
     return _client
 
 
 class DjangoClient(object):
-    def __init__(self, monitor=False):
+    def __init__(self):
         auklet_config = settings.AUKLET_CONFIG
         self.apikey = auklet_config.get("api_key", None)
         self.app_id = auklet_config.get("application", None)
@@ -57,8 +55,6 @@ class DjangoClient(object):
         if self.org_id is None:
             raise AukletConfigurationError(
                 "Please set organization in AUKLET_CONFIG settings")
-        if monitor:
-            self.monitoring = Monitoring()
         self.auklet_dir = create_dir()
         self.mac_hash = get_mac()
         self.device_ip = get_device_ip()
@@ -86,7 +82,7 @@ class DjangoClient(object):
         event_dict['device'] = None
         return event_dict
 
-    def build_stack_data(self, stack):
+    def build_stack_data(self, stack, total_time, total_calls):
         return {
             "application": client.app_id,
             "publicIP": get_device_ip(),
@@ -95,13 +91,16 @@ class DjangoClient(object):
             "macAddressHash": self.mac_hash,
             "release": self.release,
             "agentVersion": get_agent_version(),
-            "tree": stack,
+            "tree": stack.__dict__(),
+            "totalTime": total_time,
+            "totalCalls": total_calls,
             "device": None,
             "version": client.version
         }
 
-    def build_msgpack_stack(self, stack):
-        return msgpack.packb(self.build_stack_data(stack), use_bin_type=False)
+    def build_msgpack_stack(self, stack, total_time, total_calls):
+        return msgpack.packb(self.build_stack_data(
+            stack, total_time, total_calls), use_bin_type=False)
 
     def build_msgpack_event_data(self, type, traceback):
         event_data = self.build_event_data(type, traceback)
@@ -110,8 +109,9 @@ class DjangoClient(object):
     def produce_event(self, type, traceback):
         self.broker.produce(self.build_msgpack_event_data(type, traceback))
 
-    def produce_stack(self, stack):
-        self.broker.produce(self.build_msgpack_stack(stack), "monitoring")
+    def produce_stack(self, stack, total_time, total_calls):
+        self.broker.produce(self.build_msgpack_stack(
+            stack, total_time, total_calls), "monitoring")
 
 
 def init_client():

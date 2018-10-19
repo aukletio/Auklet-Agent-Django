@@ -1,59 +1,33 @@
-from __future__ import absolute_import
-
-import sys
-import signal
-from six import iteritems
-from six.moves import _thread
-
-from auklet.monitoring.logging import AukletLogging
-from auklet.stats import Stack
+import cProfile
+from auklet.stats import AukletProfilerStats, Function
 
 
-class Monitoring(object):
-    samples_taken = 0
-    timer = signal.ITIMER_PROF
-    sig = signal.SIGPROF
-    stopping = False
-    stopped = False
+class AukletViewProfiler(object):
+    profiler = None
 
-    interval = 1e-3  # 1ms
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        self.profiler = cProfile.Profile()
+        args = (request,) + view_args
+        return self.profiler.runcall(view_func, *args, **view_kwargs)
 
-    total_samples = 0
+    def add_func(self, func, cumulative=0.1):
+        for subfunc in func.subfuncs():
+            if subfunc.stats[3] >= cumulative:
+                func.callees.append(subfunc)
+                self.add_func(subfunc, cumulative)
 
-    def __init__(self):
-        signal.signal(self.sig, self.sample)
-        signal.siginterrupt(self.sig, False)
-        self.stack = Stack()
-        super(Monitoring, self).__init__()
+    def create_stack(self, request, response):
+        if not hasattr(self, 'profiler'):
+            return None
+        # Could be delayed until the panel content is requested (perf. optim.)
+        self.profiler.create_stats()
+        self.stats = AukletProfilerStats(self.profiler)
+        self.stats.calc_callees()
 
-    def start(self):
-        # Set a timer which fires a SIGALRM every `interval` seconds
-        signal.setitimer(self.timer, self.interval, self.interval)
-
-    def stop(self):
-        self.stopping = True
-
-    def wait_for_stop(self):
-        while not self.stopped:
-            pass
-
-    def sample(self, sig, current_frame):
-        """Samples the given frame."""
-        if self.stopping:
-            signal.setitimer(self.timer, 0, 0)
-            self.stopped = True
-            return
-        current_thread = _thread.get_ident()
-        for thread_id, frame in iteritems(sys._current_frames()):
-            if thread_id == current_thread:
-                frame = current_frame
-            frames = []
-            while frame is not None:
-                frames.append(frame)
-                frame = frame.f_back
-            self.stack.update_hash(frames)
-        self.total_samples += 1
-        self.samples_taken += 1
-
-    def get_stack(self):
-        return self.stack.get()
+        root_func = self.stats.get_root_func()
+        # Ensure root function exists before continuing with function call analysis
+        if root_func:
+            root = Function(self.stats, root_func, depth=0)
+            self.add_func(root,
+                          root.stats[3] / 8)
+            return root
