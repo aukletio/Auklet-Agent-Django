@@ -1,5 +1,19 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Implemented enhancements:**
+
+- Readme improvements [#59](https://github.com/aukletio/Auklet-Agent-Django/pull/59) ([bleib1dj](https://github.com/bleib1dj))
+
+**DevOps changes:**
+
+- Downgrade to CircleCI 2.0 [#56](https://github.com/aukletio/Auklet-Agent-Django/pull/56) ([rjenkinsjr](https://github.com/rjenkinsjr))
+- Fix duplicate build check exit logic yet again [#52](https://github.com/aukletio/Auklet-Agent-Django/pull/52) ([rjenkinsjr](https://github.com/rjenkinsjr))
+- Fix duplicate build check again [#50](https://github.com/aukletio/Auklet-Agent-Django/pull/50) ([rjenkinsjr](https://github.com/rjenkinsjr))
+- Fix duplicate build check [#49](https://github.com/aukletio/Auklet-Agent-Django/pull/49) ([rjenkinsjr](https://github.com/rjenkinsjr))
+- Add duplicate build check [#48](https://github.com/aukletio/Auklet-Agent-Django/pull/48) ([rjenkinsjr](https://github.com/rjenkinsjr))
+
 ## [0.2.3](https://github.com/aukletio/Auklet-Agent-Django/tree/0.2.3)
 
 **Fixed bugs:**
