@@ -32,9 +32,9 @@ config settings:
 
 ```python
 AUKLET_CONFIG = {
-    "api_key": "<API_KEY>",
-    "application": "<APPLICATION>",
-    "organization": "<ORGANIZATION>"
+    "api_key": "<your api key>",
+    "application": "<your application id>",
+    "organization": "<your organization id>"
 }
 ```
 
@@ -50,17 +50,17 @@ You can track releases and identify which servers are running what variant of co
 ```bash
 curl -X POST https://api.auklet.io/v1/releases/ \
             -H "Content-Type: application/json" \
-            -H "Authorization: JWT <API_KEY>" \
-            -d '{"application": "<APP_ID>", "release": "'$(git rev-parse HEAD)'", "version": "<YOUR_DEFINED_VERSION>"}'
+            -H "Authorization: JWT <your api key>" \
+            -d '{"application": "<your application id>", "release": "'$(git rev-parse HEAD)'", "version": "<your own version>"}'
 ```
-You can get a pre constructed curl request from the setup directions at [Auklet][https://app.auklet.io/]
+You can get a pre constructed curl request from the setup directions at [Auklet](https://app.auklet.io/).
 
 ```python
 AUKLET_CONFIG = {
-    "api_key": "<API_KEY>",
-    "application": "<APPLICATION>",
-    "organization": "<ORGANIZATION>",
-    "release": "<GIT_COMMIT_HASH>",
+    "api_key": "<your api key>",
+    "application": "<your application id>",
+    "organization": "<your organization id>",
+    "release": "<the git hash of your deployed code>",  # Optional
     "version": "1.2.3"
 }
 ```
