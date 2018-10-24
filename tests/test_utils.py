@@ -4,12 +4,10 @@ import requests
 import unittest
 from unittest.mock import patch
 
-from config.set_config import set_config
+from tests.set_config import set_config
 
 from auklet.utils import *
 from auklet.client import DjangoClient
-from auklet.errors import \
-    AukletException, AukletConfigurationError, AukletConnectionError
 
 try:
     # For Python 3.0 and later
