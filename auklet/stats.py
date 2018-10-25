@@ -148,18 +148,19 @@ class Function(object):
             "nCalls": self.count(),
             "totalTime": self.total_time(),
             "timePerCall": self.total_time_per_call(),
-            "callees": self.get_callees()
+            "callees": self.get_formatted_callees()
         }
 
-    def get_callees(self):
+    def get_formatted_callees(self):
         callees = []
         for callee in self.callees:
             if self.id in callee.parent_ids:
-                callee.parent_ids.remove(self.id)
-                callees.append(callee.__dict__())
+                if callee.depth == self.depth + 1:
+                    callee.parent_ids.remove(self.id)
+                    callees.append(callee.__dict__())
         return callees
 
-    def subfuncs(self):
+    def get_callees(self):
         for func, stats in self.statobj.all_callees[self.func].items():
             yield Function(self.statobj,
                            func,

@@ -11,7 +11,7 @@ class AukletViewProfiler(object):
         return self.profiler.runcall(view_func, *args, **view_kwargs)
 
     def add_func(self, func, cumulative=0.1):
-        for subfunc in func.subfuncs():
+        for subfunc in func.get_callees():
             if subfunc.stats[3] >= cumulative:
                 func.callees.append(subfunc)
                 self.add_func(subfunc, cumulative)
