@@ -27,7 +27,7 @@ if [[ $CIRCLECI == 'true' ]]; then
   set -e
   # Then we check the third line and see if it contains the known error message
   # and print an error message of our own but let the build succeed.
-  if [ "$(echo `sed -n '2p' /app/exit_message.txt` | cut -d ' ' -f1-5)" = "HTTP 409: A test report" ]; then
+  if [ "$(echo `sed -n '2p' exit_message.txt` | cut -d ' ' -f1-5)" = "HTTP 409: A test report" ]; then
     echo "A test report has already been created for this commit; this build will proceed without updating test coverage data in Code Climate."
     exit 0
   else
