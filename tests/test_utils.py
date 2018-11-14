@@ -2,7 +2,6 @@ import os
 import requests
 
 import unittest
-from unittest.mock import patch
 
 from tests.set_config import set_config
 
@@ -11,11 +10,10 @@ from auklet.client import DjangoClient
 
 try:
     # For Python 3.0 and later
-    from urllib.error import HTTPError, URLError
-    from urllib.request import Request, urlopen
+    from unittest.mock import patch
 except ImportError:
-    # Fall back to Python 2's urllib2
-    from urllib2 import urlopen, Request, HTTPError, URLError
+    # Fall back to Python 2's mock
+    from mock import patch
 
 
 class TestUtils(unittest.TestCase):
@@ -87,6 +85,7 @@ class TestUtils(unittest.TestCase):
     def test_version_info(self):
         self.assertNotEqual(None, b('b'))
         self.assertNotEqual(None, u(b'u'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,11 +2,17 @@ import os
 import ast
 import unittest
 
-from mock import patch
 from tests import data_factory
 
 from auklet.client import DjangoClient
 from auklet.broker import MQTTClient
+
+try:
+    # For Python 3.0 and later
+    from unittest.mock import patch
+except ImportError:
+    # Fall back to Python 2's mock
+    from mock import patch
 
 
 def recreate_files():

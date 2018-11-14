@@ -43,6 +43,7 @@ class Event(object):
             trace = trace.tb_next
         self.trace = tb
 
+
 class FilenameCaches(object):
     cached_filenames = {}
 

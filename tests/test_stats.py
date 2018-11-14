@@ -1,7 +1,13 @@
 import unittest
-from unittest.mock import patch
 
 from auklet.stats import Event, FilenameCaches, SystemMetrics
+
+try:
+    # For Python 3.0 and later
+    from unittest.mock import patch
+except ImportError:
+    # Fall back to Python 2's mock
+    from mock import patch
 
 
 class TestEvent(unittest.TestCase):
@@ -40,8 +46,9 @@ class TestEvent(unittest.TestCase):
         tb_next = None
 
     class Tree:
-        def get_filename(self, f_code):
-            pass
+        @staticmethod
+        def get_filename(f_code, frame):
+            return ""
 
 
 class TestFilenameCache(unittest.TestCase):

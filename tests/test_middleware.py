@@ -1,9 +1,15 @@
 import unittest
-from unittest.mock import patch
 
 from tests.set_config import set_config
 
 from auklet.middleware import AukletMiddleware
+
+try:
+    # For Python 3.0 and later
+    from unittest.mock import patch
+except ImportError:
+    # Fall back to Python 2's mock
+    from mock import patch
 
 
 class TestAukletMiddleware(unittest.TestCase):

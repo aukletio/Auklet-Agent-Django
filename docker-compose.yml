@@ -1,8 +1,25 @@
 version: '2'
 
+volumes:
+  postgres_data_dev: {}
+  postgres_backup_dev: {}
+
 services:
+  postgres:
+    build: ./compose/postgres
+    ports:
+    - "5432:5432"
+    volumes:
+    - postgres_data_dev:/var/lib/postgresql/data
+    - postgres_backup_dev:/backups
+    environment:
+    - POSTGRES_USER=apm
+    - POSTGRES_PASSWORD=apm
+
   tests:
     build:
       context: .
       dockerfile: ./compose/tests/Dockerfile
-    command: bash ./initialize_test_environment.sh
+    command: bash .devops/tests.sh
+    depends_on:
+    - postgres

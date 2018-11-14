@@ -1,22 +1,53 @@
-FROM python:3.6
+FROM circleci/python:3.6.6-jessie-node-browsers
 
 RUN \
-  apt-get update && \
-  apt-get -y upgrade && \
-  apt-get install -y build-essential && \
-  apt-get install -y software-properties-common && \
-  apt-get install -y wget
+  sudo apt-get update && \
+  sudo apt-get -y upgrade && \
+  sudo apt-get install -y build-essential && \
+  sudo apt-get install -y software-properties-common && \
+  sudo apt-get install -y wget \
+    make \
+    build-essential \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    curl \
+    llvm \
+    libncurses5-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libffi-dev \
+    liblzma-dev \
+    git && \
+  sudo echo "deb http://ftp.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/backports.list && \
+  sudo apt-get -y -t jessie-backports install openssl libssl-dev
 
-ADD ./auklet /auklet
-ADD ./tests /tests
-ADD ./setup.py /setup.py
-ADD ./README.md /README.md
-ADD ./requirements.txt /requirements.txt
-ADD ./tests.txt /tests.txt
-ADD ./.coveragerc /.coveragerc
-ADD ./compose/tests/initialize_test_environment.sh /initialize_test_environment.sh
+RUN sudo apt-get -t jessie-backports install -y \
+  postgresql-client-9.6 \
+  libgdal-dev \
+  binutils \
+  libproj-dev \
+  gdal-bin \
+  python-dev \
+  zip
 
-RUN pip3 install -U setuptools
-RUN pip3 install coverage
+RUN sudo apt-get install python-gdal -y
 
-RUN python3 setup.py install
+COPY ./auklet /home/circleci/auklet
+COPY ./tests /home/circleci/tests
+COPY ./compose /home/circleci/compose
+COPY ./.coveragerc /home/circleci/.coveragerc
+COPY ./README.md /home/circleci/README.md
+COPY ./requirements.txt /home/circleci/requirements.txt
+COPY ./tests.txt /home/circleci/tests.txt
+COPY ./setup.cfg /home/circleci/setup.cfg
+COPY ./setup.py /home/circleci/setup.py
+COPY ./manage.py /home/circleci/manage.py
+COPY ./tests/settings.py /home/circleci/settings.py
+COPY .devops /home/circleci/.devops
+
+RUN sudo chown -R circleci /home/circleci
+
+WORKDIR /home/circleci

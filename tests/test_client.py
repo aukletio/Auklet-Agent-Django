@@ -1,33 +1,50 @@
 import unittest
-from unittest.mock import patch
+from django.test import TestCase, override_settings
 
-from settings import AUKLET_CONFIG
-from tests.set_config import set_config
 
 from auklet.client import DjangoClient, get_client, init_client
 from auklet.errors import AukletConfigurationError
+
+from tests.set_config import set_config
+
+try:
+    # For Python 3.0 and later
+    from unittest.mock import patch
+except ImportError:
+    # Fall back to Python 2's mock
+    from mock import patch
+
+
+class TestDjangoClientInit(TestCase):
+    def setUp(self):
+        self.client = DjangoClient()
+
+    @override_settings(AUKLET_CONFIG={"api_key": None,
+                                      "application": "123",
+                                      "organization": "123"})
+    def test___init___no_api_key(self):
+        self.assertRaises(AukletConfigurationError,
+                          lambda: self.client.__init__())
+
+    @override_settings(AUKLET_CONFIG={"api_key": "123",
+                                      "application": None,
+                                      "organization": "123"})
+    def test___init___no_appid(self):
+        self.assertRaises(AukletConfigurationError,
+                          lambda: self.client.__init__())
+
+    @override_settings(AUKLET_CONFIG={"api_key": "123",
+                                      "application": "123",
+                                      "organization": None})
+    def test___init___no_org_id(self):
+        self.assertRaises(AukletConfigurationError,
+                          lambda: self.client.__init__())
 
 
 class TestDjangoClient(unittest.TestCase):
     def setUp(self):
         set_config()
         self.client = DjangoClient()
-
-    def test___init__(self):
-        AUKLET_CONFIG["api_key"] = None
-        self.assertRaises(
-            AukletConfigurationError, lambda: DjangoClient.__init__(self))
-        AUKLET_CONFIG["api_key"] = "123"
-
-        AUKLET_CONFIG["application"] = None
-        self.assertRaises(
-            AukletConfigurationError, lambda: DjangoClient.__init__(self))
-        AUKLET_CONFIG["application"] = "123"
-
-        AUKLET_CONFIG["organization"] = None
-        self.assertRaises(
-            AukletConfigurationError, lambda: DjangoClient.__init__(self))
-        AUKLET_CONFIG["organization"] = "123ß"
 
     def test_build_event_data(self):
         self.assertIsNotNone(
@@ -63,6 +80,9 @@ class TestDjangoClient(unittest.TestCase):
     def produce(self, data):
         global test_produce
         test_produce = True
+
+    def get(self):
+        pass
 
 
 class TestClient(unittest.TestCase):

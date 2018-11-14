@@ -1,3 +1,5 @@
+import sys
+
 import unittest
 
 from auklet.monitoring.logging import AukletLogging
