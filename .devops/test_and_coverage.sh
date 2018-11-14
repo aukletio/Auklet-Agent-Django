@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-CIRCLE_LOCAL_BUILD=$1
+CIRCLECI=$1
 
 #
 # This file exists because we should be able to run tests locally without needing
@@ -11,15 +11,15 @@ CIRCLE_LOCAL_BUILD=$1
 # a test report was already posted for that commit. On line 19-30 we have
 # implemented a check to see if the test reporter throws this message.
 
-if [[ "$CIRCLE_LOCAL_BUILD" == 'false' ]]; then
+if [[ $CIRCLECI == 'true' ]]; then
   curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   chmod +x ./cc-test-reporter
   ./cc-test-reporter before-build
 fi
 
-sh /app/.devops/tests.sh
+sh /app/.deivops/tests.sh
 
-if [[ "$CIRCLE_LOCAL_BUILD" == 'false' ]]; then
+if [[ $CIRCLECI == 'true' ]]; then
   # Set -e is disabled momentarily to be able to output the error message to log.txt file.
   set +e
   ./cc-test-reporter after-build -t coverage.py -r $CC_TEST_REPORTER_ID --exit-code $? 2>&1 | tee exit_message.txt
