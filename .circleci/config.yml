@@ -53,6 +53,8 @@ jobs:
                   chmod +x ./docker-compose
                   sudo mv ./docker-compose /usr/local/bin
 
+            - setup_remote_docker
+
             ##
             # RESTORE CACHES
             ##
