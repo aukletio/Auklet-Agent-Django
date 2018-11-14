@@ -20,6 +20,6 @@ services:
     build:
       context: .
       dockerfile: ./compose/tests/Dockerfile
-    command: bash .devops/tests.sh
+    command: bash .devops/tests_and_coverage.sh ${CIRCLECI}
     depends_on:
     - postgres
