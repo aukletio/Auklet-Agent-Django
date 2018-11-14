@@ -17,7 +17,7 @@ if [[ $CIRCLECI == 'true' ]]; then
   ./cc-test-reporter before-build
 fi
 
-sh /app/.deivops/tests.sh
+sh .devops/tests.sh
 
 if [[ $CIRCLECI == 'true' ]]; then
   # Set -e is disabled momentarily to be able to output the error message to log.txt file.
