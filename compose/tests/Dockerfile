@@ -46,7 +46,8 @@ COPY ./setup.cfg /home/circleci/setup.cfg
 COPY ./setup.py /home/circleci/setup.py
 COPY ./manage.py /home/circleci/manage.py
 COPY ./tests/settings.py /home/circleci/settings.py
-COPY .devops /home/circleci/.devops
+COPY ./.devops /home/circleci/.devops
+COPY ./.git /home/circleci/.git
 
 RUN sudo chown -R circleci /home/circleci
 
