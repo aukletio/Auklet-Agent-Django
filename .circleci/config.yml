@@ -24,6 +24,7 @@ jobs:
             - run:
                 name: Flag local/PR builds
                 command: |
+                    echo $CCTEST_REPORTER_ID
                     if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
                       touch ~/.localCircleBuild
                     fi
