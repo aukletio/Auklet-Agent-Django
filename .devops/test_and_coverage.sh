@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 CIRCLECI=$1
+CC_TEST_REPORTER_ID=$2
 
 #
 # This file exists because we should be able to run tests locally without needing
