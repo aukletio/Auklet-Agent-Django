@@ -51,7 +51,6 @@ COPY ./.git /home/circleci/.git
 
 RUN sudo chown -R circleci /home/circleci
 RUN mkdir /home/circleci/htmlcov
-RUN sudo chown circleci:circleci /home/circleci/htmlcov
 
 
 WORKDIR /home/circleci

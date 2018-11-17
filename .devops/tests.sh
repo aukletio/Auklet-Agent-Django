@@ -32,5 +32,6 @@ done
 
 coverage combine
 coverage report -m
+sudo chown circleci:circleci htmlcov
 coverage html -d htmlcov
 coverage xml
