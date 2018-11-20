@@ -1,5 +1,15 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Implemented enhancements:**
+
+- Performance Monitoring [#58](https://github.com/aukletio/Auklet-Agent-Django/pull/58) ([tylerwiersing](https://github.com/tylerwiersing))
+
+**Fixed bugs:**
+
+- Pass Correct Context to MQTT Constructor [#63](https://github.com/aukletio/Auklet-Agent-Django/pull/63) ([tylerwiersing](https://github.com/tylerwiersing))
+
 ## [0.3.0](https://github.com/aukletio/Auklet-Agent-Django/tree/0.3.0)
 
 **Implemented enhancements:**
