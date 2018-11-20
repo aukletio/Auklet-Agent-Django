@@ -24,11 +24,17 @@ def recreate_files():
 
 class TestMQTTBroker(unittest.TestCase):
     data = ast.literal_eval(str(data_factory.MonitoringDataFactory()))
-    config = ast.literal_eval(str(data_factory.ConfigFactory()))
 
     def setUp(self):
         self.client = DjangoClient
-        self.broker = MQTTClient("http://example.com", "1", "", "", "", "http://example.com/", ".auklet")
+        self.broker = MQTTClient("http://example.com",
+                                 "1",
+                                 "",
+                                 "",
+                                 "",
+                                 "http://example.com/",
+                                 ".auklet")
+        print(self.data)
 
     def test_get_certs(self):
         os.system("touch .auklet/ca.pem")

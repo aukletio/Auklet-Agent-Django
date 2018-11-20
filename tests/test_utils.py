@@ -22,7 +22,7 @@ class TestUtils(unittest.TestCase):
         self.client = DjangoClient()
 
     def test_open_auklet_url(self):
-        url = self.client.base_url + "private/devices/config/"
+        url = "{}private/devices/config/".format(self.client.base_url)
         self.assertEqual(None, open_auklet_url("example.com", "api_key"))
         self.assertEqual(
             "<Response [401]>", str(open_auklet_url(url, "api_key")))
