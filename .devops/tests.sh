@@ -27,7 +27,7 @@ do
     python setup.py install
 
     python ./tests/set_config.py
-    COVERAGE_FILE=.coverage.python$pyver coverage run --rcfile=".coveragerc" manage.py test
+    COVERAGE_FILE=.coverage.python$pyver coverage run --rcfile=".coveragerc" tests/manage.py test
 done
 
 coverage combine
