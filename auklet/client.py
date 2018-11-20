@@ -6,6 +6,7 @@ from uuid import uuid4
 from django.conf import settings
 
 from auklet.errors import AukletConfigurationError
+from auklet.monitoring import AukletViewProfiler
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import get_agent_version, get_device_ip, get_mac, \
@@ -81,12 +82,36 @@ class DjangoClient(object):
         event_dict['device'] = None
         return event_dict
 
+    def build_stack_data(self, stack, total_time, total_calls):
+        return {
+            "application": client.app_id,
+            "publicIP": get_device_ip(),
+            "id": str(uuid4()),
+            "timestamp": int(round(time() * 1000)),
+            "macAddressHash": self.mac_hash,
+            "release": self.release,
+            "agentVersion": get_agent_version(),
+            "tree": stack.__dict__(),
+            "totalTime": total_time,
+            "totalCalls": total_calls,
+            "device": None,
+            "version": client.version
+        }
+
+    def build_msgpack_stack(self, stack, total_time, total_calls):
+        return msgpack.packb(self.build_stack_data(
+            stack, total_time, total_calls), use_bin_type=False)
+
     def build_msgpack_event_data(self, type, traceback):
         event_data = self.build_event_data(type, traceback)
         return msgpack.packb(event_data, use_bin_type=False)
 
     def produce_event(self, type, traceback):
         self.broker.produce(self.build_msgpack_event_data(type, traceback))
+
+    def produce_stack(self, stack, total_time, total_calls):
+        self.broker.produce(self.build_msgpack_stack(
+            stack, total_time, total_calls), "monitoring")
 
 
 def init_client():

@@ -73,11 +73,11 @@ class MQTTClient(object):
                 username=self.app_id,
                 password=self.apikey)
             self.producer.enable_logger()
-            context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+            context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
             context.verify_mode = ssl.CERT_REQUIRED
             context.load_verify_locations(capath="{}/".format(self.auklet_dir))
             context.options &= ~ssl.OP_NO_SSLv3
-            self.producer.tls_set_context()
+            self.producer.tls_set_context(context=context)
             self.producer.on_disconnect = self.on_disconnect
             self.producer.connect(self.brokers, self.port)
         return True
