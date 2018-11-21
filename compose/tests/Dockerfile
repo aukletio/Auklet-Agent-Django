@@ -50,6 +50,7 @@ COPY ./tests.txt /home/circleci/tests.txt
 
 # This file is required in two locations
 COPY ./tests/settings.py /home/circleci/settings.py
+COPY ./tests/manage.py /home/circleci/manage.py
 
 RUN sudo chown -R circleci /home/circleci
 RUN mkdir /home/circleci/htmlcov
