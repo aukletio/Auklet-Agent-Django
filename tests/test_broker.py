@@ -91,7 +91,7 @@ class TestMQTTBroker(unittest.TestCase):
         def enable_logger(self):
             pass
 
-        def tls_set_context(self):
+        def tls_set_context(self, context):
             pass
 
         def on_disconnect(self):
