@@ -9,7 +9,7 @@ from auklet.__about__ import __version__ as auklet_version
 
 __all__ = ['open_auklet_url', 'create_file', 'clear_file', 'build_url',
            'get_mac', 'get_device_ip', 'get_agent_version',
-           'post_auklet_url', 'create_dir', 'b', 'u']
+           'post_auklet_url', 'create_dir', 'get_monitor', 'b', 'u']
 
 
 def open_auklet_url(url, apikey):
@@ -72,6 +72,11 @@ def get_device_ip():
 
 def get_agent_version():
     return auklet_version
+
+
+def get_monitor():
+    from django.conf import settings
+    settings.AUKLET_CONFIG.get("monitor", False)
 
 
 if sys.version_info < (3,):
