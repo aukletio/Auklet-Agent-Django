@@ -12,13 +12,12 @@ jobs:
             # SETUP
             ##
             - run:
-                name: Flag local/PR builds
+                name: Flag local build
                 command: |
                   if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
                     touch ~/.localCircleBuild
-                  fi
-                  if [[ "$CIRCLE_PR_USERNAME" != '' ]]; then
-                    touch ~/.prCircleBuild
+                    echo 'ERROR: this repo does not support local CircleCI builds because it requires the "machine" executor type.'
+                    exit 1
                   fi
             - add_ssh_keys
             - checkout
