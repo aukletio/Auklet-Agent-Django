@@ -34,7 +34,7 @@ class TestMQTTBroker(unittest.TestCase):
                                  "",
                                  "http://example.com/",
                                  ".auklet")
-        
+
     def test_get_certs(self):
         os.system("touch .auklet/ca.pem")
         self.assertTrue(self.broker._get_certs())
