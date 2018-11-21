@@ -57,6 +57,10 @@ jobs:
                   docker --version
                   docker-compose --version
             - run:
+                name: Setup Environment
+                command: |
+                  env > ~/app/.env
+            - run:
                 name: Build Docker Application
                 command: |
                   set -x
