@@ -1,5 +1,15 @@
 # Changelog
 
+## Merged But Unreleased
+
+**Implemented enhancements:**
+
+- Fixing Code Climate links [#66](https://github.com/aukletio/Auklet-Agent-Django/pull/66) ([bleib1dj](https://github.com/bleib1dj))
+
+**DevOps changes:**
+
+- Update instructions for bug reports [#65](https://github.com/aukletio/Auklet-Agent-Django/pull/65) ([rjenkinsjr](https://github.com/rjenkinsjr))
+
 ## [0.4.0](https://github.com/aukletio/Auklet-Agent-Django/tree/0.4.0)
 
 **Implemented enhancements:**
