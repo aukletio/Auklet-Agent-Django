@@ -4,6 +4,9 @@
 <a href="https://pypi.python.org/pypi/django-auklet" alt="PyPi page link -- version"><img src="https://img.shields.io/pypi/v/django-auklet.svg" /></a>
 <a href="https://pypi.python.org/pypi/django-auklet" alt="PyPi page link -- Apache 2.0 License"><img src="https://img.shields.io/pypi/l/django-auklet.svg" /></a>
 <a href="https://pypi.python.org/pypi/django-auklet" alt="Python Versions"><img src="https://img.shields.io/pypi/pyversions/django-auklet.svg" /></a>
+[![Maintainability](https://api.codeclimate.com/v1/badges/809aeef9f501894b7c73/maintainability)](https://codeclimate.com/github/aukletio/Auklet-Agent-Django/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/809aeef9f501894b7c73/test_coverage)](https://codeclimate.com/github/aukletio/Auklet-Agent-Django/test_coverage)
+
 
 This is the official Django agent for [Auklet][brochure_site]. It officially supports Django 1.7+, and runs on most POSIX-based operating systems (Debian, Ubuntu Core, Raspbian, QNX, etc).
 
