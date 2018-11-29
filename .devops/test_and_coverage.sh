@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 CIRCLECI=$1
-CC_TEST_REPORTER_ID=$2
+CC_TEST_REPORTER_ID=689b04946266e8427acf268fa4cf6a3ce4571edd6e8bcf5217a93d3b60cb501d
 
 #
 # This file exists because we should be able to run tests locally without needing
@@ -12,7 +12,6 @@ CC_TEST_REPORTER_ID=$2
 # a test report was already posted for that commit. On line 19-30 we have
 # implemented a check to see if the test reporter throws this message.
 
-echo $CC_TEST_REPORTER_ID
 if [[ $CIRCLECI == 'true' ]]; then
   curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   chmod +x ./cc-test-reporter
