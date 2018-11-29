@@ -22,6 +22,6 @@ services:
       dockerfile: ./compose/tests/Dockerfile
     volumes:
       - ./htmlcov:/home/circleci/htmlcov
-    command: bash .devops/test_and_coverage.sh ${CIRCLECI} ${CC_TEST_REPORTER_ID}
+    command: bash .devops/test_and_coverage.sh ${CIRCLECI}
     depends_on:
     - postgres
