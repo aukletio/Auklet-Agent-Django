@@ -1,7 +1,6 @@
 #!/bin/sh
 set -e
 CIRCLECI=$1
-CC_TEST_REPORTER_ID=689b04946266e8427acf268fa4cf6a3ce4571edd6e8bcf5217a93d3b60cb501d
 
 #
 # This file exists because we should be able to run tests locally without needing
@@ -21,6 +20,7 @@ fi
 sh .devops/tests.sh
 
 if [[ $CIRCLECI == 'true' ]]; then
+  export CC_TEST_REPORTER_ID=c567cbbbcae6c534f43fad6ab8e7da8e7757b5c831b6484df09b9b7113dd793
   # Set -e is disabled momentarily to be able to output the error message to log.txt file.
   set +e
   ./cc-test-reporter after-build -t coverage.py -r $CC_TEST_REPORTER_ID --exit-code $? 2>&1 | tee exit_message.txt
