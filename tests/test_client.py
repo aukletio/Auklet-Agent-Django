@@ -1,9 +1,12 @@
 import unittest
+import threading
+
 from django.test import TestCase, override_settings
 
 
 from auklet.client import DjangoClient, get_client, init_client
 from auklet.errors import AukletConfigurationError
+from auklet.stats import Function
 
 from tests.set_config import set_config
 
@@ -44,23 +47,19 @@ class TestDjangoClientInit(TestCase):
 class TestDjangoClient(unittest.TestCase):
     def setUp(self):
         set_config()
-        self.client = DjangoClient()
-
-    def test_build_event_data(self):
-        self.assertIsNotNone(
-            self.client.build_event_data(
-                type=self.Type, traceback=self.Traceback))
-
-    def test_build_msgpack_event_data(self):
-        self.assertIsNotNone(
-            self.client.build_msgpack_event_data(
-                type=self.Type, traceback=self.Traceback))
+        self.django_client = DjangoClient()
 
     def test_produce_event(self):
         with patch('auklet.broker.MQTTClient.produce') as _produce:
             _produce.side_effect = self.produce
-            self.client.produce_event(self.Type, self.Traceback)
-            self.assertTrue(test_produce)
+            self.django_client.produce_event(self.Type, self.Traceback)
+            self.assertTrue(produce_test)
+
+    def test_produce_stack(self):
+        init_client()
+        profiler = self.__class__.modules.get(threading.current_thread().ident)
+        res = profiler.create_stack('', '')
+        self.django_client.produce_stack(res, 1, 1)
 
     class Type:
         __name__ = ""
@@ -77,12 +76,32 @@ class TestDjangoClient(unittest.TestCase):
         tb_frame = FCode()
         tb_next = None
 
-    def produce(self, data):
-        global test_produce
-        test_produce = True
+    @staticmethod
+    def produce(data):
+        global produce_test
+        produce_test = True
 
-    def get(self):
-        pass
+    class Stack:
+        def __dict__(self):
+            return {}
+
+    class Modules:
+        @staticmethod
+        def process_view(request, view_func, view_args, view_kwargs):
+            global process_view_test
+            process_view_test = True
+
+        @staticmethod
+        def create_stack(request, response):
+            class Res:
+                class StatObj:
+                    total_tt = 0
+                    total_calls = 0
+
+                statobj = StatObj
+            return Res
+
+    modules = {threading.current_thread().ident: Modules}
 
 
 class TestClient(unittest.TestCase):

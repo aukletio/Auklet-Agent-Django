@@ -1,6 +1,7 @@
 import unittest
 
-from auklet.stats import Event, FilenameCaches, SystemMetrics
+from auklet.stats import Event, FilenameCaches, SystemMetrics, \
+    AukletProfilerStats, Function, contains_profiler
 
 try:
     # For Python 3.0 and later
@@ -95,6 +96,50 @@ class TestSystemMetrics(unittest.TestCase):
         self.assertIsNotNone(self.system_metrics.outbound_network)
         self.assertIsNotNone(self.system_metrics.prev_inbound)
         self.assertIsNotNone(self.system_metrics.prev_outbound)
+
+
+class TestAukletProfilerStats(unittest.TestCase):
+    def setUp(self):
+        self.profiler = AukletProfilerStats()
+
+    def test_get_root_function(self):
+        # WORK IN PROGRESS
+        pass
+
+
+class TestFunction(unittest.TestCase):
+    def setUp(self):
+        self.function = Function("", [1, 2, 3], stats=['', '', ''])
+
+    def test___init__(self):
+        self.function.__init__("", "")
+
+    def test___dict__(self):
+        print("1")
+        self.function.statobj = self.StatObj
+        print("2")
+        self.function.get_callees()
+        print(self.function.callees)
+        # self.function.id = "1"
+        # self.function.depth = 0
+        # self.function.stats = 1, 1, 1, 1
+        # self.function.callees = [self.Callee]
+        # self.assertIsNotNone(self.function.__dict__())
+
+    class StatObj:
+        func = ""
+        all_callees = [func]
+
+    class Callee:
+        parent_ids = ['1']
+        depth = 1
+        __dict__ = Function.__dict__
+
+
+class TestStats(unittest.TestCase):
+    def test_contains_profiler(self):
+        self.assertFalse(contains_profiler(""))
+        print(contains_profiler(" lsprof.Profiler"))
 
 
 if __name__ == "__main__":

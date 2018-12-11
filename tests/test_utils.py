@@ -82,6 +82,11 @@ class TestUtils(unittest.TestCase):
     def test_get_agent_version(self):
         self.assertIsNotNone(get_agent_version())
 
+    def test_get_monitor(self):
+        from django.conf import settings
+        get_monitor()
+        self.assertEqual(settings.AUKLET_CONFIG.get("monitor", False), "123")
+
     def test_version_info(self):
         self.assertNotEqual(None, b('b'))
         self.assertNotEqual(None, u(b'u'))
