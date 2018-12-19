@@ -91,7 +91,7 @@ class DjangoClient(object):
             "macAddressHash": self.mac_hash,
             "release": self.release,
             "agentVersion": get_agent_version(),
-            "tree": stack.__dict__(),
+            "tree": stack.as_dict(self),
             "totalTime": total_time,
             "totalCalls": total_calls,
             "device": None,
