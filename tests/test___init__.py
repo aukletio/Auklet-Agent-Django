@@ -1,3 +1,4 @@
+import sys
 import unittest
 import cProfile
 
@@ -31,7 +32,8 @@ class TestAukletViewProfiler(unittest.TestCase):
                 self.auklet_view_profiler.profiler = cProfile.Profile()
                 self.assertIsNotNone(
                     self.auklet_view_profiler.create_stack('', ''))
-        self.assertIsNone(AukletViewProfiler.create_stack(self, '', ''))
+        if sys.version_info >= (3,):
+            self.assertIsNone(AukletViewProfiler.create_stack(self, '', ''))
 
     class AukletProfilerStats:
         @staticmethod

@@ -30,14 +30,16 @@ class AukletMiddleware(MiddlewareMixin):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         if get_monitor():
-            profiler = self.__class__.modules.get(threading.current_thread().ident)
+            profiler = self.__class__.modules.get(
+                threading.current_thread().ident)
             return profiler.process_view(
                 request, view_func, view_args, view_kwargs)
         return view_func(request, *view_args, **view_kwargs)
 
     def process_response(self, request, response):
         if get_monitor():
-            profiler = self.__class__.modules.get(threading.current_thread().ident)
+            profiler = self.__class__.modules.get(
+                threading.current_thread().ident)
             res = profiler.create_stack(request, response)
             client = get_client()
             client.produce_stack(res, res.statobj.total_tt,

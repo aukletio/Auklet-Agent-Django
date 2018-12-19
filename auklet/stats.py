@@ -157,7 +157,6 @@ class Function(object):
             if self.id in callee.parent_ids:
                 if callee.depth == self.depth + 1:
                     callee.parent_ids.remove(self.id)
-                    print(callee.as_dict(callee))
                     callees.append(callee.as_dict)
         return callees
 

@@ -86,7 +86,8 @@ class TestDjangoClient(unittest.TestCase):
         produce_test = True
 
     class Stack():
-        def as_dict(self):
+        @staticmethod
+        def as_dict():
             return {}
 
     class Modules(object):

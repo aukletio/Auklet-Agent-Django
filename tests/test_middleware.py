@@ -13,7 +13,7 @@ except ImportError:
     from mock import patch
 
 
-class TestAukletMiddleware(unittest.TestCase):
+class TestAukletMiddleware(unittest.TestCase, AukletMiddleware):
     def setUp(self):
         set_config()
         self.middleware = AukletMiddleware()
@@ -24,7 +24,8 @@ class TestAukletMiddleware(unittest.TestCase):
 
     def test_process_exception(self):
         with patch('sys.exc_info') as _exc_info:
-            with patch('auklet.client.DjangoClient.produce_event') as _produce_event:
+            with patch('auklet.client.DjangoClient.produce_event') \
+                    as _produce_event:
                 _produce_event.side_effect = self.produce_event
                 _exc_info.side_effect = self.exc_info
                 self.middleware.process_exception('', '')
@@ -39,10 +40,12 @@ class TestAukletMiddleware(unittest.TestCase):
 
     def test_process_response(self):
         with patch('auklet.middleware.get_monitor') as _get_monitor:
-            with patch('auklet.client.DjangoClient.produce_stack') as _produce_stack:
+            with patch('auklet.client.DjangoClient.produce_stack') \
+                    as _produce_stack:
                 _get_monitor.return_value = True
                 _produce_stack.side_effect = self.produce_stack
-                AukletMiddleware.process_response(self, '', '')
+                AukletMiddleware.process_response(
+                    self, request='', response='')
         self.assertTrue(produce_stack_test)
 
     def exc_info(self):

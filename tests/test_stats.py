@@ -1,3 +1,4 @@
+import sys
 import unittest
 
 from auklet.stats import Event, FilenameCaches, SystemMetrics, \
@@ -98,16 +99,16 @@ class TestSystemMetrics(unittest.TestCase):
         self.assertIsNotNone(self.system_metrics.prev_outbound)
 
 
-class TestAukletProfilerStats(unittest.TestCase):
+class TestAukletProfilerStats(unittest.TestCase, AukletProfilerStats):
     def setUp(self):
-        self.profiler = AukletProfilerStats()
+        self.profiler = AukletProfilerStats
 
     def test_get_root_function(self):
         with patch('auklet.stats.contains_profiler') as _contains_profiler:
             _contains_profiler.return_value = None
             self.profiler.root = None
             self.profiler.stats = {1: ('', '', '', '', '')}
-            self.assertIs(1, self.profiler.get_root_func())
+            self.assertIs(1, self.profiler.get_root_func(self))
 
 
 class TestFunction(unittest.TestCase):
@@ -118,6 +119,10 @@ class TestFunction(unittest.TestCase):
         self.function.__init__(self.StatObj, 0)
 
     def test_as_dict(self):
+        patcher = patch('auklet.stats.Function.get_formatted_callees',
+                        self._get_formatted_callees)
+        if sys.version_info < (3,):
+            patcher.start()
         self.function.stats = ['', 1, 1, '']
         self.function.id = 1
         self.function.depth = 0
@@ -137,6 +142,9 @@ class TestFunction(unittest.TestCase):
 
         def as_dict(self):
             return {}
+
+    def _get_formatted_callees(self):
+        return 0
 
     class StatObj:
         all_callees = [{1: ""}]

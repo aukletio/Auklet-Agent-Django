@@ -20,8 +20,6 @@ jobs:
             # for some tests to complete.
             - image: mdillon/postgis:9.6
               name: postgres
-              ports:
-                - "5432:5432"
               environment:
                 - POSTGRES_USER=apm
                 - POSTGRES_PASSWORD=apm
