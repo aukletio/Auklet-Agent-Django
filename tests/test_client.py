@@ -6,7 +6,6 @@ from django.test import TestCase, override_settings
 
 from auklet.client import DjangoClient, get_client, init_client
 from auklet.errors import AukletConfigurationError
-from auklet.stats import Function
 
 from tests.set_config import set_config
 
@@ -50,16 +49,21 @@ class TestDjangoClient(unittest.TestCase):
         self.django_client = DjangoClient()
 
     def test_produce_event(self):
+        global produce_test
         with patch('auklet.broker.MQTTClient.produce') as _produce:
             _produce.side_effect = self.produce
             self.django_client.produce_event(self.Type, self.Traceback)
-            self.assertTrue(produce_test)
+        self.assertTrue(produce_test)
+        produce_test = False
 
     def test_produce_stack(self):
+        global produce_test
         init_client()
-        profiler = self.__class__.modules.get(threading.current_thread().ident)
-        res = profiler.create_stack('', '')
-        self.django_client.produce_stack(res, 1, 1)
+        with patch('auklet.broker.MQTTClient.produce') as _produce:
+            _produce.side_effect = self.produce
+            self.django_client.produce_stack(self.Stack, 1, 1)
+        self.assertTrue(produce_test)
+        produce_test = False
 
     class Type:
         __name__ = ""
@@ -77,15 +81,15 @@ class TestDjangoClient(unittest.TestCase):
         tb_next = None
 
     @staticmethod
-    def produce(data):
+    def produce(data, data_type="event"):
         global produce_test
         produce_test = True
 
-    class Stack:
-        def __dict__(self):
+    class Stack():
+        def as_dict(self):
             return {}
 
-    class Modules:
+    class Modules(object):
         @staticmethod
         def process_view(request, view_func, view_args, view_kwargs):
             global process_view_test

@@ -103,8 +103,11 @@ class TestAukletProfilerStats(unittest.TestCase):
         self.profiler = AukletProfilerStats()
 
     def test_get_root_function(self):
-        # WORK IN PROGRESS
-        pass
+        with patch('auklet.stats.contains_profiler') as _contains_profiler:
+            _contains_profiler.return_value = None
+            self.profiler.root = None
+            self.profiler.stats = {1: ('', '', '', '', '')}
+            self.assertIs(1, self.profiler.get_root_func())
 
 
 class TestFunction(unittest.TestCase):
@@ -112,34 +115,38 @@ class TestFunction(unittest.TestCase):
         self.function = Function("", [1, 2, 3], stats=['', '', ''])
 
     def test___init__(self):
-        self.function.__init__("", "")
+        self.function.__init__(self.StatObj, 0)
 
-    def test___dict__(self):
-        print("1")
+    def test_as_dict(self):
+        self.function.stats = ['', 1, 1, '']
+        self.function.id = 1
+        self.function.depth = 0
+        self.function.callees = [self.Callee]
+        self.assertIsNotNone(self.function.as_dict())
+        self.function.stats = ['', 0, 1, '']
+        self.assertIsNotNone(self.function.as_dict())
+
+    def test_get_callees(self):
+        self.function.func = 0
         self.function.statobj = self.StatObj
-        print("2")
-        self.function.get_callees()
-        print(self.function.callees)
-        # self.function.id = "1"
-        # self.function.depth = 0
-        # self.function.stats = 1, 1, 1, 1
-        # self.function.callees = [self.Callee]
-        # self.assertIsNotNone(self.function.__dict__())
-
-    class StatObj:
-        func = ""
-        all_callees = [func]
+        self.assertIsNotNone(next(self.function.get_callees()))
 
     class Callee:
-        parent_ids = ['1']
+        parent_ids = [1, 1]
         depth = 1
-        __dict__ = Function.__dict__
+
+        def as_dict(self):
+            return {}
+
+    class StatObj:
+        all_callees = [{1: ""}]
+        stats = [[1, 1, 1, 1], ""]
 
 
 class TestStats(unittest.TestCase):
     def test_contains_profiler(self):
         self.assertFalse(contains_profiler(""))
-        print(contains_profiler(" lsprof.Profiler"))
+        self.assertFalse(contains_profiler(" lsprof.Profiler"))
 
 
 if __name__ == "__main__":

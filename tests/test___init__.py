@@ -1,4 +1,5 @@
 import unittest
+import cProfile
 
 from auklet.monitoring import AukletViewProfiler
 
@@ -13,40 +14,50 @@ except ImportError:
 class TestAukletViewProfiler(unittest.TestCase):
     def setUp(self):
         self.auklet_view_profiler = AukletViewProfiler()
-        self.auklet_view_profiler.process_view(
-            (1, 2, 3), self.Profiler, (1, 1), {})
 
-    def tearDown(self):
-        self.auklet_view_profiler = None
+    def test_process_view(self):
+        with patch('cProfile.Profile.runcall') as _runcall:
+            _runcall.return_value = True
+            self.assertTrue(
+                self.auklet_view_profiler.process_view(
+                    (), self.auklet_view_profiler, (), {}))
 
     def test_create_stack(self):
+        with patch('auklet.monitoring.AukletProfilerStats') \
+                as _AukletProfilerStats:
+            with patch('auklet.monitoring.Function') as _Function:
+                _AukletProfilerStats.side_effect = self.AukletProfilerStats
+                _Function.side_effect = self.Function
+                self.auklet_view_profiler.profiler = cProfile.Profile()
+                self.assertIsNotNone(
+                    self.auklet_view_profiler.create_stack('', ''))
         self.assertIsNone(AukletViewProfiler.create_stack(self, '', ''))
-        with patch('auklet.monitoring.Function') as _Function:
-            _Function.side_effect = self.Function
-            self.assertIsNotNone(
-                self.auklet_view_profiler.create_stack('', ''))
 
-    class Profiler:
-        stats = ""
-
-        def __init__(self, *args, **kw):
+    class AukletProfilerStats:
+        @staticmethod
+        def __init__(profiler):
             pass
 
         @staticmethod
-        def create_stats():
+        def calc_callees():
             pass
 
+        @staticmethod
+        def get_root_func():
+            return True
+
     class Function:
+        stats = [1, 1, 1, 1]
         callees = []
 
-        def __init__(self, statobj, func, depth=0,stats=None, id=0,
-                     parent_ids=[]):
-            self.stats = [1, 1, 1, 1]
+        @staticmethod
+        def __init__(stats, root_func, depth):
+            pass
 
         def get_callees(self):
-            return [self.SubFunction]
+            return [self.SubFunc]
 
-        class SubFunction:
+        class SubFunc:
             stats = [1, 1, 1, 1]
 
             @staticmethod
