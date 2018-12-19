@@ -1,17 +1,19 @@
 #!/bin/sh
 set -e
-CIRCLECI=$1
 
-#
+CIRCLE_LOCAL_BUILD=$1
+
+echo "Local build: $CIRCLE_LOCAL_BUILD"
+
 # This file exists because we should be able to run tests locally without needing
 # to download the code climate validation package. To do this we need
 # code climate to be in a different file than the test execution.
 #
 # The test reporter will throw a HTTP 409 error if we rebuild in circle because
-# a test report was already posted for that commit. On line 19-30 we have
+# a test report was already posted for that commit. On line 33-35 we have
 # implemented a check to see if the test reporter throws this message.
 
-if [[ $CIRCLECI == 'true' ]]; then
+if [[ $CIRCLE_LOCAL_BUILD == 'false' ]]; then
   curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   chmod +x ./cc-test-reporter
   ./cc-test-reporter before-build
@@ -19,7 +21,7 @@ fi
 
 sh .devops/tests.sh
 
-if [[ $CIRCLECI == 'true' ]]; then
+if [[ $CIRCLE_LOCAL_BUILD == 'false' ]]; then
   export CC_TEST_REPORTER_ID='c567cbbbcae6c534f43fad6ab8e7da8e7757b5c831b6484df09b9b7113dd793'
   # Set -e is disabled momentarily to be able to output the error message to log.txt file.
   set +e

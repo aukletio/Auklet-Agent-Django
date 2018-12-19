@@ -1,5 +1,8 @@
 #!/bin/sh
 
+mv tests/manage.py manage.py
+mv tests/settings.py settings.py
+
 git clone https://github.com/pyenv/pyenv.git ./.pyenv
 export PYENV_ROOT="./.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -27,11 +30,15 @@ do
     python setup.py install
 
     python ./tests/set_config.py
+    # set -e is enabled because if any test from any version is to fail,
+    # it will cause CircleCI's check to fail
+    set -e
     COVERAGE_FILE=.coverage.python$pyver coverage run --rcfile=".coveragerc" manage.py test
 done
 
 coverage combine
 coverage report -m
-sudo chown circleci:circleci htmlcov
 coverage html -d htmlcov
 coverage xml
+
+rm -rf .auklet .test_auklet
