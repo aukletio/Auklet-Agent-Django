@@ -30,9 +30,7 @@ do
     python setup.py install
 
     python ./tests/set_config.py
-    # set -e is enabled because if any test from any version is to fail,
-    # it will cause CircleCI's check to fail
-    set -e
+
     COVERAGE_FILE=.coverage.python$pyver coverage run --rcfile=".coveragerc" manage.py test
 done
 
