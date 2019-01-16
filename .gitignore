@@ -203,19 +203,10 @@ tmp/*
 auklet/example_app.py
 .env
 
-# Testing Scripts
-pi_digits.py
-
 # Unit Testing Environment
-.coverage
-coverage.xml
 tests/.auklet
 tests/monitoring/.auklet
-.tox/
 .pyenv/
-key.pem
-key.pem.zip
-tests/key.pem
-tests/key.pem.zip
-run_unit_tests.sh
+key.*
+tests/key.*
 

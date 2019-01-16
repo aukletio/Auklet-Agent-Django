@@ -6,7 +6,6 @@ from uuid import uuid4
 from django.conf import settings
 
 from auklet.errors import AukletConfigurationError
-from auklet.monitoring import AukletViewProfiler
 from auklet.broker import MQTTClient
 from auklet.stats import Event, SystemMetrics, FilenameCaches
 from auklet.utils import get_agent_version, get_device_ip, get_mac, \
@@ -91,7 +90,7 @@ class DjangoClient(object):
             "macAddressHash": self.mac_hash,
             "release": self.release,
             "agentVersion": get_agent_version(),
-            "tree": stack.__dict__(),
+            "tree": stack.as_dict(),
             "totalTime": total_time,
             "totalCalls": total_calls,
             "device": None,

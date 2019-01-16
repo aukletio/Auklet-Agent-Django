@@ -16,6 +16,13 @@ jobs:
             # for details regarding "libssl-dev" vs "libssl1.0-dev".)
             # - It has Node, for our DevOps integrations.
             - image: circleci/python:3.6.6-jessie-node-browsers
+            # This is used for Django unit tests.  Postgres is required
+            # for some tests to complete.
+            - image: mdillon/postgis:9.6
+              name: postgres
+              environment:
+                - POSTGRES_USER=apm
+                - POSTGRES_PASSWORD=apm
         steps:
 
             ##
@@ -24,12 +31,12 @@ jobs:
             - run:
                 name: Flag local/PR builds
                 command: |
-                    if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
-                      touch ~/.localCircleBuild
-                    fi
-                    if [[ "$CIRCLE_PR_USERNAME" != '' ]]; then
-                      touch ~/.prCircleBuild
-                    fi
+                  if [[ "$CIRCLE_BUILD_NUM" == '' ]]; then
+                    touch ~/.localCircleBuild
+                  fi
+                  if [[ "$CIRCLE_PR_USERNAME" != '' ]]; then
+                    touch ~/.prCircleBuild
+                  fi
             - add_ssh_keys
             - checkout
             - run:
@@ -53,6 +60,53 @@ jobs:
             ##
             # TESTS
             ##
+            - run:
+                name: Install Python dependencies
+                command: |
+                  # https://github.com/pyenv/pyenv/wiki/Common-build-problems#requirements
+                  sudo apt-get -y install \
+                    make \
+                    build-essential \
+                    zlib1g-dev \
+                    libbz2-dev \
+                    libreadline-dev \
+                    libsqlite3-dev \
+                    wget \
+                    curl \
+                    llvm \
+                    libncurses5-dev \
+                    libncursesw5-dev \
+                    xz-utils \
+                    tk-dev \
+                    libffi-dev \
+                    liblzma-dev
+                  # We need to use OpenSSL 1.0.2 to support all 3.x variants,
+                  # and that version is only available in Jessie Backports.
+                  # We'll also upgrade OpenSSL, just for good measure.
+                  echo "deb http://ftp.debian.org/debian jessie-backports main" | sudo tee /etc/apt/sources.list.d/backports.list
+                  sudo apt-get update
+                  sudo apt-get -y -t jessie-backports install openssl libssl-dev
+                  # Dependencies for testing platform to connect to Postgres
+                  sudo apt-get -t jessie-backports install -y \
+                    postgresql-client-9.6 \
+                    libgdal-dev \
+                    binutils \
+                    libproj-dev \
+                    gdal-bin \
+                    python-dev \
+                    zip
+                  sudo apt-get install python-gdal -y
+            - run:
+                name: Run Unit Tests
+                command: |
+                  if [[ -f ~/.localCircleBuild ]]; then
+                    CIRCLE_LOCAL_BUILD=true
+                  else
+                    CIRCLE_LOCAL_BUILD=false
+                  fi
+                  bash .devops/test_and_coverage.sh $CIRCLE_LOCAL_BUILD
+            - store_artifacts:
+                  path: ~/app/htmlcov
 
             ##
             # SAVE CACHES

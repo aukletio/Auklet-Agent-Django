@@ -140,7 +140,7 @@ class Function(object):
         self.id = id
         self.parent_ids = parent_ids
 
-    def __dict__(self):
+    def as_dict(self):
         return {
             "functionName": self.func[2],
             "lineNumber": self.func[1],
@@ -157,7 +157,7 @@ class Function(object):
             if self.id in callee.parent_ids:
                 if callee.depth == self.depth + 1:
                     callee.parent_ids.remove(self.id)
-                    callees.append(callee.__dict__())
+                    callees.append(callee.as_dict)
         return callees
 
     def get_callees(self):
